@@ -3,2231 +3,2685 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Check native coin balances for up to 30 public EVM wallet addresses across six networks.">
+
+  <meta
+    name="description"
+    content="Check native balances for up to 30 EVM wallets across 20 networks."
+  >
+
   <title>Multichain Wallet Checker</title>
 
   <style>
-    :root{
-      color-scheme:dark;
-      --bg:#0b0b0b;
-      --panel:#181818;
-      --field:#111;
-      --text:#ededed;
-      --muted:#999;
-      --line:#303030;
-      --button:#eee;
-      --button-text:#111;
-      --green:#77dca1;
-      --red:#f59696;
+    :root {
+      color-scheme: dark;
+
+      --bg: #0b0b0b;
+      --panel: #181818;
+      --field: #111;
+      --text: #ededed;
+      --muted: #999;
+      --line: #303030;
+      --button: #eee;
+      --button-text: #111;
+      --green: #77dca1;
+      --red: #f59696;
     }
 
-    :root[data-theme="light"]{
-      color-scheme:light;
-      --bg:#fafafa;
-      --panel:#fff;
-      --field:#f5f5f5;
-      --text:#191919;
-      --muted:#656565;
-      --line:#dedede;
-      --button:#191919;
-      --button-text:#fff;
-      --green:#137c40;
-      --red:#ba3030;
+    :root[data-theme="light"] {
+      color-scheme: light;
+
+      --bg: #fafafa;
+      --panel: #fff;
+      --field: #f5f5f5;
+      --text: #191919;
+      --muted: #656565;
+      --line: #dedede;
+      --button: #191919;
+      --button-text: #fff;
+      --green: #137c40;
+      --red: #ba3030;
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
-      font-size:14px;
+    * {
+      box-sizing: border-box;
     }
 
-    button,textarea{font:inherit}
-    button,a{touch-action:manipulation}
-    button{cursor:pointer}
-    button:disabled{opacity:.5;cursor:wait}
-
-    button:focus-visible,
-    a:focus-visible,
-    textarea:focus-visible{
-      outline:2px solid var(--text);
-      outline-offset:4px;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 14px;
     }
 
-    a{color:inherit}
-
-    .shell{
-      max-width:1180px;
-      margin:auto;
-      padding:0 28px;
+    button,
+    textarea {
+      font: inherit;
     }
 
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:26px 0;
-      border-bottom:1px solid var(--line);
+    button,
+    a {
+      touch-action: manipulation;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:650;
-      letter-spacing:-.4px;
+    button {
+      cursor: pointer;
     }
 
-    .logo{
-      width:34px;
-      height:34px;
-      border:1px solid var(--line);
-      border-radius:11px;
-      display:grid;
-      place-items:center;
-      font-size:20px;
+    button:disabled {
+      opacity: .5;
+      cursor: wait;
     }
 
-    .quiet{
-      background:var(--panel);
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 14px;
+    a {
+      color: inherit;
     }
 
-    .hero{
-      padding:58px 0 30px;
-      max-width:760px;
+    .shell {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 28px;
     }
 
-    .eyebrow{
-      color:var(--muted);
-      font-size:11px;
-      letter-spacing:2px;
-      text-transform:uppercase;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+
+      padding: 26px 0;
+
+      border-bottom: 1px solid var(--line);
     }
 
-    h1{
-      font-size:clamp(34px,6vw,56px);
-      font-weight:600;
-      letter-spacing:-2.5px;
-      line-height:1.12;
-      margin:18px 0;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      font-weight: 650;
     }
 
-    h1 span{color:var(--muted)}
+    .logo {
+      width: 34px;
+      height: 34px;
 
-    .hero p{
-      color:var(--muted);
-      font-size:16px;
-      line-height:1.7;
-      margin:0;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 20px;
     }
 
-    .panel{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:24px;
+    .quiet {
+      background: var(--panel);
+      color: var(--text);
+
+      border: 1px solid var(--line);
+      border-radius: 12px;
+
+      padding: 10px 14px;
+    }
+
+    .hero {
+      padding: 58px 0 30px;
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 56px);
+
+      font-weight: 600;
+
+      letter-spacing: -2.5px;
+      line-height: 1.12;
+
+      margin: 18px 0;
+    }
+
+    h1 span {
+      color: var(--muted);
+    }
+
+    .hero p {
+      color: var(--muted);
+
+      font-size: 16px;
+      line-height: 1.7;
+
+      margin: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+
+      border: 1px solid var(--line);
+      border-radius: 22px;
+
+      padding: 24px;
     }
 
     .form-head,
-    .section-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:15px;
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
     }
 
-    h2{
-      font-size:16px;
-      font-weight:600;
-      margin:0;
+    h2 {
+      font-size: 16px;
+      font-weight: 600;
+
+      margin: 0;
     }
 
-    .chip{
-      border:1px solid var(--line);
-      border-radius:30px;
-      padding:6px 10px;
-      color:var(--muted);
-      font-size:11px;
-      white-space:nowrap;
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+
+      padding: 6px 10px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      white-space: nowrap;
     }
 
-    label{
-      display:block;
-      color:var(--muted);
-      font-size:12px;
-      margin:22px 0 9px;
+    label {
+      display: block;
+
+      color: var(--muted);
+
+      font-size: 12px;
+
+      margin: 22px 0 9px;
     }
 
-    textarea{
-      width:100%;
-      min-height:180px;
-      resize:vertical;
-      background:var(--field);
-      border:1px solid var(--line);
-      border-radius:14px;
-      color:var(--text);
-      padding:16px;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:13px;
-      line-height:1.55;
+    textarea {
+      width: 100%;
+      min-height: 180px;
+
+      resize: vertical;
+
+      background: var(--field);
+      color: var(--text);
+
+      border: 1px solid var(--line);
+      border-radius: 14px;
+
+      padding: 16px;
+
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.55;
     }
 
-    .actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:14px;
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      margin-top: 14px;
     }
 
-    .primary{
-      border:0;
-      border-radius:14px;
-      background:var(--button);
-      color:var(--button-text);
-      padding:15px 22px;
-      font-weight:650;
-      white-space:nowrap;
+    .primary {
+      border: 0;
+      border-radius: 14px;
+
+      background: var(--button);
+      color: var(--button-text);
+
+      padding: 15px 22px;
+
+      font-weight: 650;
     }
 
-    .secondary{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:var(--panel);
-      color:var(--text);
-      padding:15px 18px;
-      font-weight:600;
+    .secondary {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+
+      background: var(--panel);
+      color: var(--text);
+
+      padding: 15px 18px;
+
+      font-weight: 600;
     }
 
-    .form-footer{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:14px;
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      flex-wrap: wrap;
+      gap: 12px;
+
+      margin-top: 14px;
     }
 
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.7;
-      margin:0;
+    .hint,
+    .counter {
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .counter{
-      font-size:12px;
-      color:var(--muted);
+    .hint {
+      line-height: 1.7;
+      margin: 0;
     }
 
-    .error{
-      color:var(--red);
-      font-size:13px;
-      line-height:1.6;
-      margin:12px 0 0;
+    .error {
+      color: var(--red);
+
+      font-size: 13px;
+      line-height: 1.6;
+
+      margin: 12px 0 0;
     }
 
-    .status{
-      min-height:22px;
-      color:var(--muted);
-      font-size:12px;
-      margin:16px 2px;
+    .status {
+      min-height: 22px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+
+      margin: 16px 2px;
     }
 
-    .summary{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-      margin:10px 0 30px;
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+
+      gap: 14px;
+
+      margin: 10px 0 30px;
     }
 
-    .metric{
-      padding:20px;
-      border-radius:18px;
+    .metric {
+      padding: 20px;
+      border-radius: 18px;
     }
 
-    .metric-label{
-      font-size:12px;
-      color:var(--muted);
+    .metric-label {
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .metric-value{
-      font-size:30px;
-      font-weight:600;
-      letter-spacing:-1px;
-      margin-top:12px;
-      font-variant-numeric:tabular-nums;
+    .metric-value {
+      font-size: 30px;
+      font-weight: 600;
+
+      margin-top: 12px;
+
+      font-variant-numeric: tabular-nums;
     }
 
-    .metric-note{
-      color:var(--muted);
-      font-size:11px;
-      margin-top:7px;
-      line-height:1.5;
+    .metric-note {
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+
+      margin-top: 7px;
     }
 
-    .wallets{
-      display:grid;
-      gap:16px;
+    .wallets {
+      display: grid;
+      gap: 16px;
     }
 
-    .wallet{
-      padding:20px;
+    .wallet {
+      padding: 20px;
     }
 
-    .wallet-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:16px;
+    .wallet-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-bottom: 16px;
     }
 
-    .wallet-title{
-      min-width:0;
+    .wallet-address {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+
+      overflow-wrap: anywhere;
     }
 
-    .wallet-address{
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:13px;
-      overflow-wrap:anywhere;
+    .wallet-meta {
+      margin-top: 6px;
+
+      color: var(--muted);
+
+      font-size: 11px;
     }
 
-    .wallet-meta{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:11px;
+    .wallet-networks {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 10px;
     }
 
-    .wallet-networks{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:10px;
+    .mini-network {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+
+      background: var(--field);
+
+      padding: 14px;
+
+      min-width: 0;
     }
 
-    .mini-network{
-      border:1px solid var(--line);
-      background:var(--field);
-      border-radius:14px;
-      padding:14px;
-      min-width:0;
+    .mini-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 8px;
+
+      margin-bottom: 10px;
     }
 
-    .mini-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      margin-bottom:10px;
+    .mini-name {
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    .mini-name{
-      font-size:12px;
-      font-weight:600;
+    .mini-status {
+      color: var(--muted);
+      font-size: 10px;
     }
 
-    .mini-status{
-      font-size:10px;
-      color:var(--muted);
+    .mini-status.ok {
+      color: var(--green);
     }
 
-    .mini-status.ok{color:var(--green)}
-    .mini-status.failed{color:var(--red)}
-
-    .mini-balance{
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:18px;
-      line-height:1.35;
-      overflow-wrap:anywhere;
+    .mini-status.failed {
+      color: var(--red);
     }
 
-    .mini-symbol{
-      color:var(--muted);
-      font-size:11px;
-      margin-top:3px;
+    .mini-balance {
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Consolas,
+        monospace;
+
+      font-size: 18px;
+
+      line-height: 1.35;
+
+      overflow-wrap: anywhere;
     }
 
-    .mini-bottom{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      margin-top:12px;
-      padding-top:10px;
-      border-top:1px solid var(--line);
+    .mini-symbol {
+      color: var(--muted);
+
+      font-size: 11px;
+
+      margin-top: 3px;
     }
 
-    .explorer{
-      font-size:11px;
-      text-decoration:none;
+    .mini-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 8px;
+
+      border-top: 1px solid var(--line);
+
+      padding-top: 10px;
+      margin-top: 12px;
     }
 
-    .explorer:hover{text-decoration:underline}
-
-    .badge{
-      font-size:10px;
-      color:var(--muted);
+    .explorer {
+      font-size: 11px;
+      text-decoration: none;
     }
 
-    .badge.ok{color:var(--green)}
-    .badge.failed{color:var(--red)}
-
-    .empty{
-      text-align:center;
-      color:var(--muted);
-      padding:28px 10px;
+    .explorer:hover {
+      text-decoration: underline;
     }
 
-    .info{
-      margin-top:22px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.8;
+    .badge {
+      font-size: 10px;
+      color: var(--muted);
     }
 
-    .info strong{
-      color:var(--text);
-      font-weight:500;
+    .badge.ok {
+      color: var(--green);
     }
 
-    footer{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:15px;
-      border-top:1px solid var(--line);
-      margin-top:42px;
-      padding:25px 0;
-      color:var(--muted);
-      font-size:11px;
+    .badge.failed {
+      color: var(--red);
     }
 
-    .developer{
-      font-size:12px;
-      text-decoration:none;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 13px;
-      color:var(--text);
+    .empty {
+      color: var(--muted);
+
+      text-align: center;
+
+      padding: 28px 10px;
     }
 
-    @media(max-width:900px){
-      .summary{grid-template-columns:repeat(2,1fr)}
-      .wallet-networks{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .info {
+      margin-top: 22px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.8;
     }
 
-    @media(max-width:560px){
-      .shell{padding:0 16px}
-      .hero{padding:38px 0 24px}
-      h1{letter-spacing:-1.5px}
-      .panel{padding:18px}
-      .summary{gap:8px}
-      .metric{padding:13px}
-      .metric-value{font-size:24px}
-      .wallet-networks{grid-template-columns:1fr}
-      .wallet-head{flex-direction:column}
-      footer{flex-direction:column;align-items:flex-start}
-      .chip{font-size:10px}
-      .actions{flex-direction:column}
-      .actions button{width:100%}
+    .info strong {
+      color: var(--text);
+      font-weight: 500;
     }
 
-    @media(prefers-reduced-motion:no-preference){
-      .loading{animation:pulse 1.4s ease-in-out infinite}
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-      @keyframes pulse{
-        50%{opacity:.45}
+      gap: 15px;
+
+      border-top: 1px solid var(--line);
+
+      margin-top: 42px;
+      padding: 25px 0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    .developer {
+      font-size: 12px;
+      text-decoration: none;
+
+      border: 1px solid var(--line);
+      border-radius: 12px;
+
+      padding: 10px 13px;
+
+      color: var(--text);
+    }
+
+    @media(max-width: 1000px) {
+      .wallet-networks {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media(max-width: 800px) {
+      .summary {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .wallet-networks {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media(max-width: 560px) {
+      .shell {
+        padding: 0 16px;
+      }
+
+      .hero {
+        padding: 38px 0 24px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .wallet-networks {
+        grid-template-columns: 1fr;
+      }
+
+      .wallet-head {
+        flex-direction: column;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="shell">
 
-    <header>
-      <div class="brand">
-        <span class="logo" aria-hidden="true">⌕</span>
-        Wallet Checker
+<div class="shell">
+
+  <header>
+
+    <div class="brand">
+
+      <span
+        class="logo"
+        aria-hidden="true"
+      >
+        ⌕
+      </span>
+
+      Wallet Checker
+
+    </div>
+
+    <button
+      class="quiet"
+      id="themeToggle"
+      type="button"
+    >
+      ☀ Light
+    </button>
+
+  </header>
+
+
+  <main>
+
+    <section class="hero">
+
+      <div class="eyebrow">
+        Multichain / Batch mode
       </div>
 
-      <button class="quiet" id="themeToggle" type="button">
-        ☀ Light
-      </button>
-    </header>
+      <h1>
+        Up to 30 wallets.<br>
+        <span>20 EVM networks.</span>
+      </h1>
 
-    <main>
-
-      <section class="hero">
-        <div class="eyebrow">
-          Multichain / Batch mode
-        </div>
-
-        <h1>
-          Up to 30 wallets.<br>
-          <span>Six networks each.</span>
-        </h1>
-
-        <p>
-          Paste one public EVM address per line and check native balances
-          across Ethereum, Base, Arbitrum, Optimism, Polygon and BNB Chain.
-        </p>
-      </section>
-
-      <form class="panel" id="walletForm" novalidate>
-
-        <div class="form-head">
-          <h2>Check wallets</h2>
-
-          <span class="chip">
-            Max 30 addresses
-          </span>
-        </div>
-
-        <label for="addresses">
-          EVM wallet addresses
-        </label>
-
-        <textarea
-          id="addresses"
-          name="addresses"
-          placeholder="0x1234...&#10;0xabcd...&#10;0x9876..."
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-describedby="addressHint error"
-        ></textarea>
-
-        <div class="actions">
-
-          <button
-            class="primary"
-            id="checkButton"
-            type="submit"
-          >
-            Check wallets ↗
-          </button>
-
-          <button
-            class="secondary"
-            id="exampleButton"
-            type="button"
-          >
-            Add examples
-          </button>
-
-          <button
-            class="secondary"
-            id="clearButton"
-            type="button"
-          >
-            Clear
-          </button>
-
-        </div>
-
-        <div class="form-footer">
-
-          <p class="hint" id="addressHint">
-            One address per line. Duplicates are removed automatically.
-            Addresses are sent only to public RPC providers.
-          </p>
-
-          <span
-            class="counter"
-            id="addressCounter"
-          >
-            0 / 30
-          </span>
-
-        </div>
-
-        <p
-          class="error"
-          id="error"
-          role="alert"
-          hidden
-        ></p>
-
-      </form>
-
-      <p
-        class="status"
-        id="status"
-        role="status"
-        aria-live="polite"
-      >
-        Ready when you are.
+      <p>
+        Paste public EVM addresses and check native balances
+        across 20 networks in one scan.
       </p>
 
-      <div
-        class="summary"
-        aria-label="Scan summary"
-      >
+    </section>
 
-        <div class="panel metric">
-          <div class="metric-label">
-            Wallets
-          </div>
 
-          <div
-            class="metric-value"
-            id="walletCount"
-          >
-            —
-          </div>
+    <form
+      class="panel"
+      id="walletForm"
+      novalidate
+    >
 
-          <div class="metric-note">
-            Unique valid addresses
-          </div>
-        </div>
+      <div class="form-head">
 
-        <div class="panel metric">
-          <div class="metric-label">
-            Network checks
-          </div>
+        <h2>
+          Check wallets
+        </h2>
 
-          <div
-            class="metric-value"
-            id="checked"
-          >
-            —
-          </div>
-
-          <div class="metric-note">
-            Successful / total
-          </div>
-        </div>
-
-        <div class="panel metric">
-          <div class="metric-label">
-            Wallets funded
-          </div>
-
-          <div
-            class="metric-value"
-            id="fundedWallets"
-          >
-            —
-          </div>
-
-          <div class="metric-note">
-            At least one native balance
-          </div>
-        </div>
-
-        <div class="panel metric">
-          <div class="metric-label">
-            Unavailable
-          </div>
-
-          <div
-            class="metric-value"
-            id="unavailable"
-          >
-            —
-          </div>
-
-          <div class="metric-note">
-            Failed network checks
-          </div>
-        </div>
+        <span class="chip">
+          30 wallets × 20 chains
+        </span>
 
       </div>
 
-      <section aria-label="Wallet results">
 
-        <div class="section-head">
+      <label for="addresses">
+        EVM wallet addresses
+      </label>
 
-          <h2>
-            Wallet results
-          </h2>
 
-          <span
-            class="chip"
-            id="progressChip"
-          >
-            No scan yet
-          </span>
+      <textarea
+        id="addresses"
+        name="addresses"
+        placeholder="0x1234...&#10;0xabcd...&#10;0x9876..."
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+      ></textarea>
 
+
+      <div class="actions">
+
+        <button
+          class="primary"
+          id="checkButton"
+          type="submit"
+        >
+          Check wallets ↗
+        </button>
+
+
+        <button
+          class="secondary"
+          id="exampleButton"
+          type="button"
+        >
+          Add examples
+        </button>
+
+
+        <button
+          class="secondary"
+          id="clearButton"
+          type="button"
+        >
+          Clear
+        </button>
+
+      </div>
+
+
+      <div class="form-footer">
+
+        <p class="hint">
+          One address per line.
+          Duplicates are removed automatically.
+        </p>
+
+        <span
+          class="counter"
+          id="addressCounter"
+        >
+          0 / 30
+        </span>
+
+      </div>
+
+
+      <p
+        class="error"
+        id="error"
+        role="alert"
+        hidden
+      ></p>
+
+    </form>
+
+
+    <p
+      class="status"
+      id="status"
+      role="status"
+      aria-live="polite"
+    >
+      Ready when you are.
+    </p>
+
+
+    <div class="summary">
+
+      <div class="panel metric">
+
+        <div class="metric-label">
+          Wallets
         </div>
 
         <div
-          class="wallets"
-          id="wallets"
+          class="metric-value"
+          id="walletCount"
         >
-
-          <div class="panel empty">
-            Add wallet addresses above to start.
-          </div>
-
+          —
         </div>
 
-      </section>
+        <div class="metric-note">
+          Unique valid addresses
+        </div>
 
-      <p class="info">
-        <strong>Native coins only.</strong>
-        This version checks ETH, POL and BNB.
-        ERC-20 tokens, NFTs and DeFi positions are not included.
-        A wallet can have a zero native balance and still hold other assets.
-      </p>
+      </div>
 
-    </main>
 
-    <footer>
+      <div class="panel metric">
 
-      <span>
-        Multichain Wallet Checker · Read-only · PublicNode RPC
-      </span>
+        <div class="metric-label">
+          Network checks
+        </div>
 
-      <a
-        class="developer"
-        href="https://x.com/_Anchor_Point_"
-        target="_blank"
-        rel="noopener noreferrer"
+        <div
+          class="metric-value"
+          id="checked"
+        >
+          —
+        </div>
+
+        <div class="metric-note">
+          Successful / total
+        </div>
+
+      </div>
+
+
+      <div class="panel metric">
+
+        <div class="metric-label">
+          Wallets funded
+        </div>
+
+        <div
+          class="metric-value"
+          id="fundedWallets"
+        >
+          —
+        </div>
+
+        <div class="metric-note">
+          Native balance on ≥1 network
+        </div>
+
+      </div>
+
+
+      <div class="panel metric">
+
+        <div class="metric-label">
+          Unavailable
+        </div>
+
+        <div
+          class="metric-value"
+          id="unavailable"
+        >
+          —
+        </div>
+
+        <div class="metric-note">
+          Failed RPC checks
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <section>
+
+      <div class="section-head">
+
+        <h2>
+          Wallet results
+        </h2>
+
+        <span
+          class="chip"
+          id="progressChip"
+        >
+          No scan yet
+        </span>
+
+      </div>
+
+
+      <div
+        class="wallets"
+        id="wallets"
       >
-        𝕏 Built by @_Anchor_Point_ ↗
-      </a>
 
-    </footer>
+        <div class="panel empty">
+          Add wallet addresses above to start.
+        </div>
 
-  </div>
+      </div>
 
-  <script>
+    </section>
 
-    const $ = id =>
-      document.getElementById(id);
 
+    <p class="info">
 
-    const MAX_WALLETS = 30;
+      <strong>Native coins only.</strong>
 
-    const CONCURRENCY = 6;
+      ERC-20 tokens, NFTs and DeFi positions are not included yet.
+      A zero native balance does not mean the wallet has no other assets.
 
+    </p>
 
-    const chains = [
+  </main>
 
-      {
-        id:'ethereum',
-        name:'Ethereum',
-        symbol:'ETH',
-        chainId:1,
-        rpc:'https://ethereum-rpc.publicnode.com',
-        explorer:'https://etherscan.io'
-      },
 
-      {
-        id:'base',
-        name:'Base',
-        symbol:'ETH',
-        chainId:8453,
-        rpc:'https://base-rpc.publicnode.com',
-        explorer:'https://basescan.org'
-      },
+  <footer>
 
-      {
-        id:'arbitrum',
-        name:'Arbitrum',
-        symbol:'ETH',
-        chainId:42161,
-        rpc:'https://arbitrum-one-rpc.publicnode.com',
-        explorer:'https://arbiscan.io'
-      },
+    <span>
+      Multichain Wallet Checker · Read-only
+    </span>
 
-      {
-        id:'optimism',
-        name:'Optimism',
-        symbol:'ETH',
-        chainId:10,
-        rpc:'https://optimism-rpc.publicnode.com',
-        explorer:'https://optimistic.etherscan.io'
-      },
+    <a
+      class="developer"
+      href="https://x.com/_Anchor_Point_"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      𝕏 Built by @_Anchor_Point_ ↗
+    </a>
 
-      {
-        id:'polygon',
-        name:'Polygon',
-        symbol:'POL',
-        chainId:137,
-        rpc:'https://polygon-bor-rpc.publicnode.com',
-        explorer:'https://polygonscan.com'
-      },
+  </footer>
 
-      {
-        id:'bsc',
-        name:'BNB Chain',
-        symbol:'BNB',
-        chainId:56,
-        rpc:'https://bsc-rpc.publicnode.com',
-        explorer:'https://bscscan.com'
-      }
+</div>
 
-    ];
+
+<script>
+
+const $ =
+  id => document.getElementById(id);
+
+
+const MAX_WALLETS = 30;
+
+
+/*
+  Number of balance requests running simultaneously.
+
+  30 wallets × 20 networks = up to 600 requests,
+  so we intentionally limit concurrency.
+*/
+
+const CONCURRENCY = 10;
+
+
+const chains = [
+
+  {
+    id: "ethereum",
+    name: "Ethereum",
+    symbol: "ETH",
+    chainId: 1,
+    rpc: "https://ethereum-rpc.publicnode.com",
+    explorer: "https://etherscan.io"
+  },
+
+  {
+    id: "base",
+    name: "Base",
+    symbol: "ETH",
+    chainId: 8453,
+    rpc: "https://base-rpc.publicnode.com",
+    explorer: "https://basescan.org"
+  },
+
+  {
+    id: "arbitrum",
+    name: "Arbitrum",
+    symbol: "ETH",
+    chainId: 42161,
+    rpc: "https://arbitrum-one-rpc.publicnode.com",
+    explorer: "https://arbiscan.io"
+  },
+
+  {
+    id: "optimism",
+    name: "Optimism",
+    symbol: "ETH",
+    chainId: 10,
+    rpc: "https://optimism-rpc.publicnode.com",
+    explorer: "https://optimistic.etherscan.io"
+  },
+
+  {
+    id: "polygon",
+    name: "Polygon",
+    symbol: "POL",
+    chainId: 137,
+    rpc: "https://polygon-bor-rpc.publicnode.com",
+    explorer: "https://polygonscan.com"
+  },
+
+  {
+    id: "bsc",
+    name: "BNB Chain",
+    symbol: "BNB",
+    chainId: 56,
+    rpc: "https://bsc-rpc.publicnode.com",
+    explorer: "https://bscscan.com"
+  },
+
+  {
+    id: "avalanche",
+    name: "Avalanche",
+    symbol: "AVAX",
+    chainId: 43114,
+    rpc: "https://avalanche-c-chain-rpc.publicnode.com",
+    explorer: "https://snowtrace.io"
+  },
+
+  {
+    id: "gnosis",
+    name: "Gnosis",
+    symbol: "xDAI",
+    chainId: 100,
+    rpc: "https://gnosis-rpc.publicnode.com",
+    explorer: "https://gnosisscan.io"
+  },
+
+  {
+    id: "linea",
+    name: "Linea",
+    symbol: "ETH",
+    chainId: 59144,
+    rpc: "https://linea-rpc.publicnode.com",
+    explorer: "https://lineascan.build"
+  },
+
+  {
+    id: "scroll",
+    name: "Scroll",
+    symbol: "ETH",
+    chainId: 534352,
+    rpc: "https://scroll-rpc.publicnode.com",
+    explorer: "https://scrollscan.com"
+  },
+
+  {
+    id: "mantle",
+    name: "Mantle",
+    symbol: "MNT",
+    chainId: 5000,
+    rpc: "https://mantle-rpc.publicnode.com",
+    explorer: "https://explorer.mantle.xyz"
+  },
+
+  {
+    id: "blast",
+    name: "Blast",
+    symbol: "ETH",
+    chainId: 81457,
+    rpc: "https://blast-rpc.publicnode.com",
+    explorer: "https://blastscan.io"
+  },
+
+  {
+    id: "celo",
+    name: "Celo",
+    symbol: "CELO",
+    chainId: 42220,
+    rpc: "https://forno.celo.org",
+    explorer: "https://celoscan.io"
+  },
+
+  {
+    id: "sonic",
+    name: "Sonic",
+    symbol: "S",
+    chainId: 146,
+    rpc: "https://sonic-rpc.publicnode.com",
+    explorer: "https://sonicscan.org"
+  },
+
+  {
+    id: "berachain",
+    name: "Berachain",
+    symbol: "BERA",
+    chainId: 80094,
+    rpc: "https://berachain-rpc.publicnode.com",
+    explorer: "https://berascan.com"
+  },
+
+  {
+    id: "unichain",
+    name: "Unichain",
+    symbol: "ETH",
+    chainId: 130,
+    rpc: "https://unichain-rpc.publicnode.com",
+    explorer: "https://uniscan.xyz"
+  },
+
+  {
+    id: "opbnb",
+    name: "opBNB",
+    symbol: "BNB",
+    chainId: 204,
+    rpc: "https://opbnb-rpc.publicnode.com",
+    explorer: "https://opbnbscan.com"
+  },
+
+  {
+    id: "cronos",
+    name: "Cronos",
+    symbol: "CRO",
+    chainId: 25,
+    rpc: "https://cronos-evm-rpc.publicnode.com",
+    explorer: "https://cronoscan.com"
+  },
+
+  {
+    id: "sei",
+    name: "Sei EVM",
+    symbol: "SEI",
+    chainId: 1329,
+    rpc: "https://sei-evm-rpc.publicnode.com",
+    explorer: "https://seitrace.com"
+  },
 
+  {
+    id: "ink",
+    name: "Ink",
+    symbol: "ETH",
+    chainId: 57073,
+    rpc: "https://rpc-gel.inkonchain.com",
+    explorer: "https://explorer.inkonchain.com"
+  }
 
-    let wallets = [];
+];
 
-    let results = [];
 
-    let scanning = false;
+let wallets = [];
 
-    let rpcId = 0;
+let results = [];
 
+let scanning = false;
 
-    function isAddress(value){
+let rpcId = 0;
 
-      return /^0x[0-9a-fA-F]{40}$/.test(value);
+let completedChecks = 0;
 
-    }
 
+/* ---------------- ADDRESS ---------------- */
 
-    function parseAddresses(){
 
-      const raw =
-        $('addresses').value
-          .split(/\r?\n|,|\s+/)
-          .map(v => v.trim())
-          .filter(Boolean);
+function isAddress(value) {
 
+  return /^0x[0-9a-fA-F]{40}$/.test(value);
 
-      const unique = [
-        ...new Set(
-          raw.map(v => v.toLowerCase())
-        )
-      ];
+}
 
 
-      return {
+function parseAddresses() {
 
-        raw,
+  const raw =
 
-        unique,
+    $("addresses")
+      .value
+      .split(/\r?\n|,|\s+/)
+      .map(v => v.trim())
+      .filter(Boolean);
 
-        valid:
-          unique.filter(isAddress),
 
-        invalid:
-          unique.filter(
-            v => !isAddress(v)
-          )
+  const unique = [
 
-      };
+    ...new Set(
 
-    }
+      raw.map(
+        value => value.toLowerCase()
+      )
 
+    )
 
-    function updateCounter(){
+  ];
 
-      const { unique } =
-        parseAddresses();
 
+  return {
 
-      $('addressCounter').textContent =
-        Math.min(
-          unique.length,
-          MAX_WALLETS
-        )
-        + ' / '
-        + MAX_WALLETS;
+    unique,
 
-    }
+    valid:
+      unique.filter(isAddress),
 
+    invalid:
+      unique.filter(
+        value => !isAddress(value)
+      )
 
-    function formatBalance(wei){
+  };
 
-      const unit =
-        10n ** 18n;
+}
 
 
-      const whole =
-        (wei / unit).toString();
+function updateCounter() {
 
+  const parsed =
+    parseAddresses();
 
-      const fraction =
-        (wei % unit)
-          .toString()
-          .padStart(18,'0')
-          .replace(/0+$/,'');
 
+  $("addressCounter").textContent =
 
-      return whole
-        + (
-          fraction
-            ? '.' + fraction
-            : ''
-        );
+    parsed.unique.length
+    + " / "
+    + MAX_WALLETS;
 
-    }
+}
 
 
-    function shortBalance(wei){
+/* ---------------- BALANCES ---------------- */
 
-      if(
-        wei === 0n
-      ){
-        return '0';
-      }
 
+function formatBalance(wei) {
 
-      if(
-        wei < 10n ** 12n
-      ){
-        return '<0.000001';
-      }
+  const unit =
+    10n ** 18n;
 
 
-      const exact =
-        formatBalance(wei);
+  const whole =
+    (wei / unit).toString();
 
 
-      const [
-        whole,
-        fraction=''
-      ] =
-        exact.split('.');
+  const fraction =
 
+    (wei % unit)
 
-      const truncated =
-        fraction
-          .slice(0,6)
-          .replace(/0+$/,'');
+      .toString()
 
+      .padStart(
+        18,
+        "0"
+      )
 
-      return whole
-        .replace(
-          /\B(?=(\d{3})+(?!\d))/g,
-          ','
-        )
-        +
-        (
-          truncated
-            ? '.' + truncated
-            : ''
-        );
-
-    }
-
-
-    function shortAddress(address){
-
-      return address.slice(0,8)
-        + '…'
-        + address.slice(-6);
-
-    }
-
-
-    function setBusy(value){
-
-      scanning =
-        value;
-
-
-      $('checkButton').disabled =
-        value;
-
-
-      $('addresses').disabled =
-        value;
-
-
-      $('exampleButton').disabled =
-        value;
-
-
-      $('clearButton').disabled =
-        value;
-
-
-      $('checkButton').textContent =
-        value
-          ? 'Checking…'
-          : 'Check wallets ↗';
-
-    }
-
-
-    function emptyStates(){
-
-      return chains.map(
-        () => ({
-          status:'idle'
-        })
+      .replace(
+        /0+$/,
+        ""
       );
 
-    }
+
+  return whole
+    + (
+      fraction
+        ? "." + fraction
+        : ""
+    );
+
+}
 
 
-    function render(){
+function shortBalance(wei) {
 
-      const container =
-        $('wallets');
+  if (
+    wei === 0n
+  ) {
 
+    return "0";
 
-      container.replaceChildren();
-
-
-      if(
-        !wallets.length
-      ){
-
-        const empty =
-          document.createElement('div');
+  }
 
 
-        empty.className =
-          'panel empty';
+  if (
+    wei < 10n ** 12n
+  ) {
+
+    return "<0.000001";
+
+  }
 
 
-        empty.textContent =
-          'Add wallet addresses above to start.';
+  const exact =
+    formatBalance(wei);
 
 
-        container.append(empty);
+  const [
+    whole,
+    fraction = ""
+  ] =
+    exact.split(".");
 
 
-        $('walletCount').textContent =
-          '—';
+  const truncated =
+
+    fraction
+
+      .slice(
+        0,
+        6
+      )
+
+      .replace(
+        /0+$/,
+        ""
+      );
 
 
-        $('checked').textContent =
-          '—';
+  return whole
+
+    .replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      ","
+    )
+
+    +
+
+    (
+      truncated
+        ? "." + truncated
+        : ""
+    );
+
+}
 
 
-        $('fundedWallets').textContent =
-          '—';
+function shortAddress(address) {
+
+  return address.slice(0, 8)
+    + "…"
+    + address.slice(-6);
+
+}
 
 
-        $('unavailable').textContent =
-          '—';
+/* ---------------- UI ---------------- */
 
 
-        $('progressChip').textContent =
-          'No scan yet';
+function emptyStates() {
+
+  return chains.map(
+
+    () => ({
+      status: "idle"
+    })
+
+  );
+
+}
 
 
-        return;
+function setBusy(value) {
+
+  scanning =
+    value;
+
+
+  $("checkButton").disabled =
+    value;
+
+
+  $("addresses").disabled =
+    value;
+
+
+  $("exampleButton").disabled =
+    value;
+
+
+  $("clearButton").disabled =
+    value;
+
+
+  $("checkButton").textContent =
+
+    value
+      ? "Checking…"
+      : "Check wallets ↗";
+
+}
+
+
+function render() {
+
+  const container =
+    $("wallets");
+
+
+  container.replaceChildren();
+
+
+  if (
+    wallets.length === 0
+  ) {
+
+    const empty =
+      document.createElement("div");
+
+
+    empty.className =
+      "panel empty";
+
+
+    empty.textContent =
+      "Add wallet addresses above to start.";
+
+
+    container.append(
+      empty
+    );
+
+
+    $("walletCount").textContent =
+      "—";
+
+
+    $("checked").textContent =
+      "—";
+
+
+    $("fundedWallets").textContent =
+      "—";
+
+
+    $("unavailable").textContent =
+      "—";
+
+
+    $("progressChip").textContent =
+      "No scan yet";
+
+
+    return;
+
+  }
+
+
+  let success = 0;
+
+  let failed = 0;
+
+  let fundedWallets = 0;
+
+
+  wallets.forEach(
+
+    (
+      address,
+      walletIndex
+    ) => {
+
+      const walletResults =
+        results[walletIndex];
+
+
+      const successful =
+
+        walletResults.filter(
+
+          result =>
+            result.status === "ok"
+
+        );
+
+
+      success +=
+        successful.length;
+
+
+      failed +=
+
+        walletResults.filter(
+
+          result =>
+            result.status === "failed"
+
+        ).length;
+
+
+      if (
+
+        successful.some(
+
+          result =>
+            result.wei > 0n
+
+        )
+
+      ) {
+
+        fundedWallets++;
 
       }
 
 
-      let okCount = 0;
-
-      let failCount = 0;
-
-      let fundedWalletCount = 0;
-
-      let finishedChecks = 0;
+      const card =
+        document.createElement(
+          "article"
+        );
 
 
-      wallets.forEach(
+      card.className =
+        "panel wallet";
+
+
+      const head =
+        document.createElement(
+          "div"
+        );
+
+
+      head.className =
+        "wallet-head";
+
+
+      const title =
+        document.createElement(
+          "div"
+        );
+
+
+      const addressNode =
+        document.createElement(
+          "div"
+        );
+
+
+      addressNode.className =
+        "wallet-address";
+
+
+      addressNode.textContent =
+        shortAddress(address);
+
+
+      addressNode.title =
+        address;
+
+
+      const meta =
+        document.createElement(
+          "div"
+        );
+
+
+      meta.className =
+        "wallet-meta";
+
+
+      meta.textContent =
+
+        successful.length
+        + " / "
+        + chains.length
+        + " networks responded";
+
+
+      title.append(
+        addressNode,
+        meta
+      );
+
+
+      const copy =
+        document.createElement(
+          "button"
+        );
+
+
+      copy.className =
+        "quiet";
+
+
+      copy.type =
+        "button";
+
+
+      copy.textContent =
+        "Copy";
+
+
+      copy.addEventListener(
+
+        "click",
+
+        async () => {
+
+          try {
+
+            await navigator
+              .clipboard
+              .writeText(address);
+
+
+            $("status").textContent =
+
+              "Address copied: "
+              + shortAddress(address);
+
+          }
+
+          catch {
+
+            $("status").textContent =
+
+              "Copy address: "
+              + address;
+
+          }
+
+        }
+
+      );
+
+
+      head.append(
+        title,
+        copy
+      );
+
+
+      const grid =
+        document.createElement(
+          "div"
+        );
+
+
+      grid.className =
+        "wallet-networks";
+
+
+      chains.forEach(
+
         (
-          address,
-          walletIndex
+          chain,
+          chainIndex
         ) => {
 
-          const walletResult =
-            results[walletIndex];
-
-
-          const okStates =
-            walletResult.filter(
-              s =>
-                s.status === 'ok'
-            );
-
-
-          const failedStates =
-            walletResult.filter(
-              s =>
-                s.status === 'failed'
-            );
-
-
-          okCount +=
-            okStates.length;
-
-
-          failCount +=
-            failedStates.length;
-
-
-          finishedChecks +=
-            okStates.length
-            + failedStates.length;
-
-
-          if(
-            okStates.some(
-              s =>
-                s.wei > 0n
-            )
-          ){
-
-            fundedWalletCount++;
-
-          }
-
-
-          const card =
-            document.createElement(
-              'article'
-            );
-
-
-          card.className =
-            'panel wallet';
-
-
-          const head =
-            document.createElement(
-              'div'
-            );
-
-
-          head.className =
-            'wallet-head';
-
-
-          const title =
-            document.createElement(
-              'div'
-            );
-
-
-          title.className =
-            'wallet-title';
-
-
-          const addr =
-            document.createElement(
-              'div'
-            );
-
-
-          addr.className =
-            'wallet-address';
-
-
-          addr.textContent =
-            shortAddress(address);
-
-
-          addr.title =
-            address;
-
-
-          const meta =
-            document.createElement(
-              'div'
-            );
-
-
-          meta.className =
-            'wallet-meta';
-
-
-          meta.textContent =
-            okStates.length
-            + '/'
-            + chains.length
-            + ' networks responded';
-
-
-          title.append(
-            addr,
-            meta
-          );
-
-
-          const copy =
-            document.createElement(
-              'button'
-            );
-
-
-          copy.className =
-            'quiet';
-
-
-          copy.type =
-            'button';
-
-
-          copy.textContent =
-            'Copy';
-
-
-          copy.addEventListener(
-            'click',
-            async()=>{
-              try{
-
-                await navigator.clipboard
-                  .writeText(address);
-
-
-                $('status').textContent =
-                  'Address copied: '
-                  + shortAddress(address);
-
-              }catch{
-
-                $('status').textContent =
-                  'Copy this address: '
-                  + address;
-
-              }
-            }
-          );
-
-
-          head.append(
-            title,
-            copy
-          );
-
-
-          const grid =
-            document.createElement(
-              'div'
-            );
-
-
-          grid.className =
-            'wallet-networks';
-
-
-          chains.forEach(
-            (
-              chain,
-              chainIndex
-            ) => {
-
-              const state =
-                walletResult[
-                  chainIndex
-                ];
-
-
-              const network =
-                document.createElement(
-                  'div'
-                );
-
-
-              network.className =
-                'mini-network';
-
-
-              const top =
-                document.createElement(
-                  'div'
-                );
-
-
-              top.className =
-                'mini-top';
-
-
-              const name =
-                document.createElement(
-                  'span'
-                );
-
-
-              name.className =
-                'mini-name';
-
-
-              name.textContent =
-                chain.name;
-
-
-              const badge =
-                document.createElement(
-                  'span'
-                );
-
-
-              badge.className =
-                'mini-status '
-                + state.status;
-
-
-              const label = {
-
-                idle:'Waiting',
-
-                loading:'Checking…',
-
-                ok:'Checked',
-
-                failed:'Unavailable'
-
-              };
-
-
-              badge.textContent =
-                label[
-                  state.status
-                ];
-
-
-              top.append(
-                name,
-                badge
-              );
-
-
-              const balance =
-                document.createElement(
-                  'div'
-                );
-
-
-              balance.className =
-                'mini-balance'
-                +
-                (
-                  state.status === 'loading'
-                    ? ' loading'
-                    : ''
-                );
-
-
-              balance.textContent =
-                state.status === 'ok'
-                  ? shortBalance(
-                      state.wei
-                    )
-                  : '—';
-
-
-              if(
-                state.status === 'ok'
-              ){
-
-                balance.title =
-                  formatBalance(
-                    state.wei
-                  )
-                  + ' '
-                  + chain.symbol;
-
-              }
-
-
-              const symbol =
-                document.createElement(
-                  'div'
-                );
-
-
-              symbol.className =
-                'mini-symbol';
-
-
-              symbol.textContent =
-                chain.symbol;
-
-
-              const bottom =
-                document.createElement(
-                  'div'
-                );
-
-
-              bottom.className =
-                'mini-bottom';
-
-
-              const link =
-                document.createElement(
-                  'a'
-                );
-
-
-              link.className =
-                'explorer';
-
-
-              link.href =
-                chain.explorer
-                + '/address/'
-                + address;
-
-
-              link.target =
-                '_blank';
-
-
-              link.rel =
-                'noopener noreferrer';
-
-
-              link.textContent =
-                'Explorer ↗';
-
-
-              const note =
-                document.createElement(
-                  'span'
-                );
-
-
-              note.className =
-                'badge '
-                + state.status;
-
-
-              note.textContent =
-                state.status === 'failed'
-                  ? 'Failed'
-                  : state.status === 'ok'
-                    ? (
-                        state.wei > 0n
-                          ? 'Funded'
-                          : 'Zero'
-                      )
-                    : '';
-
-
-              bottom.append(
-                link,
-                note
-              );
-
-
-              network.append(
-                top,
-                balance,
-                symbol,
-                bottom
-              );
-
-
-              grid.append(
-                network
-              );
-
-            }
-          );
-
-
-          card.append(
-            head,
-            grid
-          );
-
-
-          container.append(
-            card
-          );
-
-        }
-      );
-
-
-      const totalChecks =
-        wallets.length
-        * chains.length;
-
-
-      $('walletCount').textContent =
-        String(
-          wallets.length
-        );
-
-
-      $('checked').textContent =
-        okCount
-        + '/'
-        + totalChecks;
-
-
-      $('fundedWallets').textContent =
-        String(
-          fundedWalletCount
-        );
-
-
-      $('unavailable').textContent =
-        String(
-          failCount
-        );
-
-
-      $('progressChip').textContent =
-        finishedChecks
-        + ' / '
-        + totalChecks
-        + ' checks finished';
-
-    }
-
-
-    async function rpc(
-      chain,
-      method,
-      params,
-      signal
-    ){
-
-      const id =
-        ++rpcId;
-
-
-      const response =
-        await fetch(
-          chain.rpc,
-          {
-
-            method:'POST',
-
-            headers:{
-              'Content-Type':
-                'application/json'
-            },
-
-            body:
-              JSON.stringify({
-                jsonrpc:'2.0',
-                id,
-                method,
-                params
-              }),
-
-            signal
-
-          }
-        );
-
-
-      if(
-        !response.ok
-      ){
-
-        throw new Error(
-
-          response.status === 429
-
-            ? 'RPC rate limit reached.'
-
-            : 'RPC unavailable (HTTP '
-              + response.status
-              + ').'
-
-        );
-
-      }
-
-
-      const data =
-        await response.json();
-
-
-      if(
-        data.error
-      ){
-
-        throw new Error(
-          'RPC returned an error.'
-        );
-
-      }
-
-
-      if(
-        data.id !== id
-        ||
-        typeof data.result !== 'string'
-        ||
-        !/^0x[0-9a-fA-F]+$/.test(
-          data.result
-        )
-      ){
-
-        throw new Error(
-          'Invalid RPC response.'
-        );
-
-      }
-
-
-      return BigInt(
-        data.result
-      );
-
-    }
-
-
-    async function verifyChain(
-      chain
-    ){
-
-      const controller =
-        new AbortController();
-
-
-      const timeout =
-        setTimeout(
-          () =>
-            controller.abort(),
-          12000
-        );
-
-
-      try{
-
-        const chainId =
-          await rpc(
-            chain,
-            'eth_chainId',
-            [],
-            controller.signal
-          );
-
-
-        if(
-          chainId !==
-          BigInt(
-            chain.chainId
-          )
-        ){
-
-          throw new Error(
-            'RPC network mismatch.'
-          );
-
-        }
-
-
-        return true;
-
-      }finally{
-
-        clearTimeout(
-          timeout
-        );
-
-      }
-
-    }
-
-
-    async function loadBalance(
-      walletIndex,
-      chainIndex
-    ){
-
-      const address =
-        wallets[
-          walletIndex
-        ];
-
-
-      const chain =
-        chains[
-          chainIndex
-        ];
-
-
-      results[
-        walletIndex
-      ][
-        chainIndex
-      ] = {
-
-        status:'loading'
-
-      };
-
-
-      render();
-
-
-      const controller =
-        new AbortController();
-
-
-      const timeout =
-        setTimeout(
-          () =>
-            controller.abort(),
-          15000
-        );
-
-
-      try{
-
-        const wei =
-          await rpc(
-            chain,
-            'eth_getBalance',
-            [
-              address,
-              'latest'
-            ],
-            controller.signal
-          );
-
-
-        results[
-          walletIndex
-        ][
-          chainIndex
-        ] = {
-
-          status:'ok',
-
-          wei,
-
-          time:
-            Date.now()
-
-        };
-
-      }catch(error){
-
-        results[
-          walletIndex
-        ][
-          chainIndex
-        ] = {
-
-          status:'failed',
-
-          error:
-
-            error.name === 'AbortError'
-
-              ? 'RPC timed out.'
-
-              : error instanceof TypeError
-
-                ? 'Could not reach RPC.'
-
-                : error.message
-
-        };
-
-      }finally{
-
-        clearTimeout(
-          timeout
-        );
-
-
-        render();
-
-      }
-
-    }
-
-
-    async function runPool(
-      tasks,
-      limit
-    ){
-
-      let index = 0;
-
-
-      async function worker(){
-
-        while(
-          index < tasks.length
-        ){
-
-          const current =
-            index++;
-
-
-          await tasks[
-            current
-          ]();
-
-        }
-
-      }
-
-
-      await Promise.all(
-
-        Array.from(
-
-          {
-            length:
-              Math.min(
-                limit,
-                tasks.length
-              )
-          },
-
-          () =>
-            worker()
-
-        )
-
-      );
-
-    }
-
-
-    async function scan(
-      event
-    ){
-
-      event.preventDefault();
-
-
-      if(
-        scanning
-      ){
-        return;
-      }
-
-
-      const parsed =
-        parseAddresses();
-
-
-      if(
-        parsed.invalid.length
-      ){
-
-        $('error').textContent =
-          'Invalid address: '
-          + parsed.invalid[0]
-          + '. Use 0x followed by 40 hexadecimal characters.';
-
-
-        $('error').hidden =
-          false;
-
-
-        return;
-
-      }
-
-
-      if(
-        !parsed.valid.length
-      ){
-
-        $('error').textContent =
-          'Add at least one valid EVM wallet address.';
-
-
-        $('error').hidden =
-          false;
-
-
-        $('addresses').focus();
-
-
-        return;
-
-      }
-
-
-      if(
-        parsed.valid.length
-        >
-        MAX_WALLETS
-      ){
-
-        $('error').textContent =
-          'Maximum '
-          + MAX_WALLETS
-          + ' unique wallet addresses per scan.';
-
-
-        $('error').hidden =
-          false;
-
-
-        return;
-
-      }
-
-
-      $('error').hidden =
-        true;
-
-
-      wallets =
-        parsed.valid;
-
-
-      results =
-        wallets.map(
-          () =>
-            emptyStates()
-        );
-
-
-      setBusy(
-        true
-      );
-
-
-      render();
-
-
-      $('status').textContent =
-        'Preparing '
-        + wallets.length
-        + ' wallet'
-        + (
-          wallets.length === 1
-            ? ''
-            : 's'
-        )
-        + ' across '
-        + chains.length
-        + ' networks…';
-
-
-      try{
-
-        const availableChains =
-          [];
-
-
-        for(
-          let chainIndex = 0;
-          chainIndex < chains.length;
-          chainIndex++
-        ){
-
-          const chain =
-            chains[
+          const state =
+            walletResults[
               chainIndex
             ];
 
 
-          $('status').textContent =
-            'Checking '
-            + chain.name
-            + ' RPC…';
-
-
-          try{
-
-            await verifyChain(
-              chain
+          const network =
+            document.createElement(
+              "div"
             );
 
 
-            availableChains.push(
-              chainIndex
-            );
+          network.className =
+            "mini-network";
 
-          }catch(error){
 
-            wallets.forEach(
-              (
-                _,
-                walletIndex
-              ) => {
-
-                results[
-                  walletIndex
-                ][
-                  chainIndex
-                ] = {
-
-                  status:'failed',
-
-                  error:
-                    'RPC unavailable.'
-
-                };
-
-              }
+          const top =
+            document.createElement(
+              "div"
             );
 
 
-            render();
-
-          }
-
-        }
+          top.className =
+            "mini-top";
 
 
-        const tasks =
-          [];
-
-
-        for(
-          const chainIndex
-          of availableChains
-        ){
-
-          for(
-            let walletIndex = 0;
-            walletIndex < wallets.length;
-            walletIndex++
-          ){
-
-            tasks.push(
-
-              () =>
-                loadBalance(
-                  walletIndex,
-                  chainIndex
-                )
-
+          const name =
+            document.createElement(
+              "span"
             );
 
-          }
 
-        }
-
-
-        $('status').textContent =
-          'Scanning balances… '
-          + tasks.length
-          + ' network checks queued.';
+          name.className =
+            "mini-name";
 
 
-        await runPool(
-          tasks,
-          CONCURRENCY
-        );
+          name.textContent =
+            chain.name;
 
 
-        const successCount =
-          results
-            .flat()
-            .filter(
-              state =>
-                state.status === 'ok'
-            )
-            .length;
+          const badge =
+            document.createElement(
+              "span"
+            );
 
 
-        const total =
-          wallets.length
-          * chains.length;
+          badge.className =
+
+            "mini-status "
+            + state.status;
 
 
-        $('status').textContent =
-          'Scan complete. '
-          + successCount
-          + ' of '
-          + total
-          + ' network checks responded.';
+          const labels = {
 
-      }finally{
+            idle:
+              "Waiting",
 
-        setBusy(
-          false
-        );
+            loading:
+              "Checking…",
 
+            ok:
+              "Checked",
 
-        render();
+            failed:
+              "Unavailable"
 
-      }
-
-    }
+          };
 
 
-    function setTheme(
-      theme
-    ){
-
-      document.documentElement
-        .dataset.theme =
-          theme;
+          badge.textContent =
+            labels[state.status];
 
 
-      $('themeToggle').textContent =
-        theme === 'dark'
-          ? '☀ Light'
-          : '☾ Dark';
-
-
-      $('themeToggle')
-        .setAttribute(
-          'aria-label',
-          'Switch to '
-          + (
-            theme === 'dark'
-              ? 'light'
-              : 'dark'
-          )
-          + ' theme'
-        );
-
-
-      try{
-
-        localStorage
-          .setItem(
-            'wallet-checker-theme',
-            theme
+          top.append(
+            name,
+            badge
           );
 
-      }catch{}
+
+          const balance =
+            document.createElement(
+              "div"
+            );
+
+
+          balance.className =
+            "mini-balance";
+
+
+          balance.textContent =
+
+            state.status === "ok"
+
+              ? shortBalance(
+                  state.wei
+                )
+
+              : "—";
+
+
+          if (
+            state.status === "ok"
+          ) {
+
+            balance.title =
+
+              formatBalance(
+                state.wei
+              )
+
+              + " "
+
+              + chain.symbol;
+
+          }
+
+
+          const symbol =
+            document.createElement(
+              "div"
+            );
+
+
+          symbol.className =
+            "mini-symbol";
+
+
+          symbol.textContent =
+            chain.symbol;
+
+
+          const bottom =
+            document.createElement(
+              "div"
+            );
+
+
+          bottom.className =
+            "mini-bottom";
+
+
+          const link =
+            document.createElement(
+              "a"
+            );
+
+
+          link.className =
+            "explorer";
+
+
+          link.href =
+
+            chain.explorer
+            + "/address/"
+            + address;
+
+
+          link.target =
+            "_blank";
+
+
+          link.rel =
+            "noopener noreferrer";
+
+
+          link.textContent =
+            "Explorer ↗";
+
+
+          const note =
+            document.createElement(
+              "span"
+            );
+
+
+          note.className =
+            "badge "
+            + state.status;
+
+
+          if (
+            state.status === "ok"
+          ) {
+
+            note.textContent =
+
+              state.wei > 0n
+                ? "Funded"
+                : "Zero";
+
+          }
+
+          else if (
+            state.status === "failed"
+          ) {
+
+            note.textContent =
+              "Failed";
+
+          }
+
+
+          bottom.append(
+            link,
+            note
+          );
+
+
+          network.append(
+            top,
+            balance,
+            symbol,
+            bottom
+          );
+
+
+          grid.append(
+            network
+          );
+
+        }
+
+      );
+
+
+      card.append(
+        head,
+        grid
+      );
+
+
+      container.append(
+        card
+      );
 
     }
 
-
-    let theme =
-      'dark';
+  );
 
 
-    try{
+  const totalChecks =
 
-      if(
-        localStorage
-          .getItem(
-            'wallet-checker-theme'
-          )
-        ===
-        'light'
-      ){
+    wallets.length
+    * chains.length;
 
-        theme =
-          'light';
+
+  $("walletCount").textContent =
+    String(wallets.length);
+
+
+  $("checked").textContent =
+
+    success
+    + "/"
+    + totalChecks;
+
+
+  $("fundedWallets").textContent =
+    String(fundedWallets);
+
+
+  $("unavailable").textContent =
+    String(failed);
+
+
+  $("progressChip").textContent =
+
+    completedChecks
+    + " / "
+    + totalChecks
+    + " checks";
+
+}
+
+
+/* ---------------- RPC ---------------- */
+
+
+async function rpc(
+  chain,
+  method,
+  params,
+  signal
+) {
+
+  const id =
+    ++rpcId;
+
+
+  const response =
+
+    await fetch(
+
+      chain.rpc,
+
+      {
+
+        method:
+          "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body:
+          JSON.stringify({
+
+            jsonrpc:
+              "2.0",
+
+            id,
+
+            method,
+
+            params
+
+          }),
+
+        signal
 
       }
 
-    }catch{}
-
-
-    setTheme(
-      theme
     );
 
 
-    $('themeToggle')
-      .addEventListener(
-        'click',
-        () => {
+  if (
+    !response.ok
+  ) {
 
-          setTheme(
+    throw new Error(
 
-            document
-              .documentElement
-              .dataset
-              .theme
-            ===
-            'dark'
+      response.status === 429
 
-              ? 'light'
+        ? "Rate limit"
 
-              : 'dark'
+        : "HTTP "
+          + response.status
+
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if (
+    data.error
+  ) {
+
+    throw new Error(
+      "RPC error"
+    );
+
+  }
+
+
+  if (
+    typeof data.result !== "string"
+  ) {
+
+    throw new Error(
+      "Invalid RPC response"
+    );
+
+  }
+
+
+  return BigInt(
+    data.result
+  );
+
+}
+
+
+/* ---------------- VERIFY NETWORK ---------------- */
+
+
+async function verifyChain(chain) {
+
+  const controller =
+    new AbortController();
+
+
+  const timeout =
+    setTimeout(
+
+      () =>
+        controller.abort(),
+
+      12000
+
+    );
+
+
+  try {
+
+    const chainId =
+
+      await rpc(
+
+        chain,
+
+        "eth_chainId",
+
+        [],
+
+        controller.signal
+
+      );
+
+
+    if (
+      chainId
+      !==
+      BigInt(chain.chainId)
+    ) {
+
+      throw new Error(
+        "Wrong chain"
+      );
+
+    }
+
+
+    return true;
+
+  }
+
+  finally {
+
+    clearTimeout(
+      timeout
+    );
+
+  }
+
+}
+
+
+/* ---------------- LOAD BALANCE ---------------- */
+
+
+async function loadBalance(
+  walletIndex,
+  chainIndex
+) {
+
+  const address =
+    wallets[walletIndex];
+
+
+  const chain =
+    chains[chainIndex];
+
+
+  const controller =
+    new AbortController();
+
+
+  const timeout =
+    setTimeout(
+
+      () =>
+        controller.abort(),
+
+      15000
+
+    );
+
+
+  try {
+
+    const wei =
+
+      await rpc(
+
+        chain,
+
+        "eth_getBalance",
+
+        [
+          address,
+          "latest"
+        ],
+
+        controller.signal
+
+      );
+
+
+    results[
+      walletIndex
+    ][
+      chainIndex
+    ] = {
+
+      status:
+        "ok",
+
+      wei
+
+    };
+
+  }
+
+  catch {
+
+    results[
+      walletIndex
+    ][
+      chainIndex
+    ] = {
+
+      status:
+        "failed"
+
+    };
+
+  }
+
+  finally {
+
+    clearTimeout(
+      timeout
+    );
+
+
+    completedChecks++;
+
+
+    $("progressChip").textContent =
+
+      completedChecks
+      + " / "
+      + (
+        wallets.length
+        * chains.length
+      )
+      + " checks";
+
+
+    $("status").textContent =
+
+      "Scanning balances… "
+      + completedChecks
+      + " / "
+      + (
+        wallets.length
+        * chains.length
+      );
+
+  }
+
+}
+
+
+/* ---------------- REQUEST POOL ---------------- */
+
+
+async function runPool(
+  tasks,
+  limit
+) {
+
+  let index = 0;
+
+
+  async function worker() {
+
+    while (
+      index < tasks.length
+    ) {
+
+      const current =
+        index++;
+
+
+      await tasks[
+        current
+      ]();
+
+    }
+
+  }
+
+
+  await Promise.all(
+
+    Array.from(
+
+      {
+        length:
+          Math.min(
+            limit,
+            tasks.length
+          )
+      },
+
+      () =>
+        worker()
+
+    )
+
+  );
+
+}
+
+
+/* ---------------- SCAN ---------------- */
+
+
+async function scan(event) {
+
+  event.preventDefault();
+
+
+  if (
+    scanning
+  ) {
+
+    return;
+
+  }
+
+
+  const parsed =
+    parseAddresses();
+
+
+  if (
+    parsed.invalid.length
+  ) {
+
+    $("error").textContent =
+
+      "Invalid address: "
+      + parsed.invalid[0];
+
+
+    $("error").hidden =
+      false;
+
+
+    return;
+
+  }
+
+
+  if (
+    parsed.valid.length === 0
+  ) {
+
+    $("error").textContent =
+
+      "Add at least one valid EVM wallet address.";
+
+
+    $("error").hidden =
+      false;
+
+
+    return;
+
+  }
+
+
+  if (
+    parsed.valid.length
+    >
+    MAX_WALLETS
+  ) {
+
+    $("error").textContent =
+
+      "Maximum 30 wallets per scan.";
+
+
+    $("error").hidden =
+      false;
+
+
+    return;
+
+  }
+
+
+  $("error").hidden =
+    true;
+
+
+  wallets =
+    parsed.valid;
+
+
+  completedChecks =
+    0;
+
+
+  results =
+
+    wallets.map(
+
+      () =>
+        chains.map(
+
+          () => ({
+            status:
+              "loading"
+          })
+
+        )
+
+    );
+
+
+  setBusy(
+    true
+  );
+
+
+  render();
+
+
+  $("status").textContent =
+    "Checking RPC endpoints…";
+
+
+  try {
+
+    const verification =
+
+      await Promise.allSettled(
+
+        chains.map(
+          chain =>
+            verifyChain(chain)
+        )
+
+      );
+
+
+    const availableChains =
+      [];
+
+
+    verification.forEach(
+
+      (
+        result,
+        chainIndex
+      ) => {
+
+        if (
+          result.status
+          ===
+          "fulfilled"
+        ) {
+
+          availableChains.push(
+            chainIndex
+          );
+
+        }
+
+        else {
+
+          wallets.forEach(
+
+            (
+              _,
+              walletIndex
+            ) => {
+
+              results[
+                walletIndex
+              ][
+                chainIndex
+              ] = {
+
+                status:
+                  "failed"
+
+              };
+
+
+              completedChecks++;
+
+            }
 
           );
 
         }
-      );
+
+      }
+
+    );
 
 
-    $('walletForm')
-      .addEventListener(
-        'submit',
-        scan
-      );
+    /*
+      Important:
+
+      Wallet is outer loop.
+
+      This spreads requests across different RPC providers
+      instead of sending 30 Ethereum requests in a row.
+    */
+
+    const tasks =
+      [];
 
 
-    $('addresses')
-      .addEventListener(
-        'input',
-        () => {
+    for (
+      let walletIndex = 0;
+      walletIndex < wallets.length;
+      walletIndex++
+    ) {
 
-          $('error').hidden =
-            true;
+      for (
+        const chainIndex
+        of availableChains
+      ) {
 
+        tasks.push(
 
-          updateCounter();
+          () =>
+            loadBalance(
+              walletIndex,
+              chainIndex
+            )
 
-        }
-      );
+        );
 
+      }
 
-    $('exampleButton')
-      .addEventListener(
-        'click',
-        () => {
-
-          $('addresses').value = [
-
-            '0x000000000000000000000000000000000000dEaD',
-
-            '0x0000000000000000000000000000000000000000'
-
-          ].join('\n');
+    }
 
 
-          $('error').hidden =
-            true;
+    $("status").textContent =
+
+      "Scanning "
+      + wallets.length
+      + " wallets across "
+      + chains.length
+      + " networks…";
 
 
-          updateCounter();
+    await runPool(
+      tasks,
+      CONCURRENCY
+    );
 
-
-          $('addresses').focus();
-
-
-          $('status').textContent =
-            'Example addresses added. Click Check wallets to scan.';
-
-        }
-      );
-
-
-    $('clearButton')
-      .addEventListener(
-        'click',
-        () => {
-
-          $('addresses').value =
-            '';
-
-
-          wallets =
-            [];
-
-
-          results =
-            [];
-
-
-          $('error').hidden =
-            true;
-
-
-          $('status').textContent =
-            'Ready when you are.';
-
-
-          updateCounter();
-
-
-          render();
-
-
-          $('addresses').focus();
-
-        }
-      );
-
-
-    updateCounter();
 
     render();
 
-  </script>
+
+    const success =
+
+      results
+        .flat()
+        .filter(
+          state =>
+            state.status === "ok"
+        )
+        .length;
+
+
+    const total =
+
+      wallets.length
+      * chains.length;
+
+
+    $("status").textContent =
+
+      "Scan complete. "
+      + success
+      + " / "
+      + total
+      + " checks successful.";
+
+  }
+
+  finally {
+
+    setBusy(
+      false
+    );
+
+
+    render();
+
+  }
+
+}
+
+
+/* ---------------- THEME ---------------- */
+
+
+function setTheme(theme) {
+
+  document
+    .documentElement
+    .dataset
+    .theme =
+      theme;
+
+
+  $("themeToggle").textContent =
+
+    theme === "dark"
+      ? "☀ Light"
+      : "☾ Dark";
+
+
+  try {
+
+    localStorage.setItem(
+
+      "wallet-checker-theme",
+
+      theme
+
+    );
+
+  }
+
+  catch {}
+
+}
+
+
+let theme =
+  "dark";
+
+
+try {
+
+  if (
+
+    localStorage.getItem(
+      "wallet-checker-theme"
+    )
+
+    ===
+
+    "light"
+
+  ) {
+
+    theme =
+      "light";
+
+  }
+
+}
+
+catch {}
+
+
+setTheme(
+  theme
+);
+
+
+$("themeToggle")
+  .addEventListener(
+
+    "click",
+
+    () => {
+
+      setTheme(
+
+        document
+          .documentElement
+          .dataset
+          .theme
+        ===
+        "dark"
+
+          ? "light"
+
+          : "dark"
+
+      );
+
+    }
+
+  );
+
+
+/* ---------------- EVENTS ---------------- */
+
+
+$("walletForm")
+  .addEventListener(
+    "submit",
+    scan
+  );
+
+
+$("addresses")
+  .addEventListener(
+
+    "input",
+
+    () => {
+
+      $("error").hidden =
+        true;
+
+
+      updateCounter();
+
+    }
+
+  );
+
+
+$("exampleButton")
+  .addEventListener(
+
+    "click",
+
+    () => {
+
+      $("addresses").value = [
+
+        "0x000000000000000000000000000000000000dEaD",
+
+        "0x0000000000000000000000000000000000000000"
+
+      ].join("\n");
+
+
+      updateCounter();
+
+
+      $("status").textContent =
+
+        "Example wallets added.";
+
+    }
+
+  );
+
+
+$("clearButton")
+  .addEventListener(
+
+    "click",
+
+    () => {
+
+      $("addresses").value =
+        "";
+
+
+      wallets =
+        [];
+
+
+      results =
+        [];
+
+
+      completedChecks =
+        0;
+
+
+      $("error").hidden =
+        true;
+
+
+      $("status").textContent =
+        "Ready when you are.";
+
+
+      updateCounter();
+
+
+      render();
+
+    }
+
+  );
+
+
+updateCounter();
+
+render();
+
+</script>
 
 </body>
 </html>
