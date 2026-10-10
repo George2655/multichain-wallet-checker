@@ -3,205 +3,690 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Check native coin balances across six EVM networks using a public wallet address.">
+  <meta name="description" content="Check native coin balances for up to 30 public EVM wallet addresses across six networks.">
   <title>Multichain Wallet Checker</title>
+
   <style>
-    :root{color-scheme:dark;--bg:#0b0b0b;--panel:#181818;--field:#111;--text:#ededed;--muted:#999;--line:#303030;--button:#eee;--button-text:#111;--green:#77dca1;--red:#f59696}
-    :root[data-theme="light"]{color-scheme:light;--bg:#fafafa;--panel:#fff;--field:#f5f5f5;--text:#191919;--muted:#656565;--line:#dedede;--button:#191919;--button-text:#fff;--green:#137c40;--red:#ba3030}
+    :root{
+      color-scheme:dark;
+      --bg:#0b0b0b;
+      --panel:#181818;
+      --field:#111;
+      --text:#ededed;
+      --muted:#999;
+      --line:#303030;
+      --button:#eee;
+      --button-text:#111;
+      --green:#77dca1;
+      --red:#f59696;
+    }
+
+    :root[data-theme="light"]{
+      color-scheme:light;
+      --bg:#fafafa;
+      --panel:#fff;
+      --field:#f5f5f5;
+      --text:#191919;
+      --muted:#656565;
+      --line:#dedede;
+      --button:#191919;
+      --button-text:#fff;
+      --green:#137c40;
+      --red:#ba3030;
+    }
 
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
-    button,input{font:inherit}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-size:14px;
+    }
+
+    button,textarea{font:inherit}
     button,a{touch-action:manipulation}
     button{cursor:pointer}
     button:disabled{opacity:.5;cursor:wait}
-    button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:4px}
-    a{color:inherit}
 
-    .shell{max-width:1120px;margin:auto;padding:0 28px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px 0;border-bottom:1px solid var(--line)}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:650;letter-spacing:-.4px}
-    .logo{width:34px;height:34px;border:1px solid var(--line);border-radius:11px;display:grid;place-items:center;font-size:20px}
-    .quiet{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
-    .hero{padding:58px 0 30px;max-width:720px}
-    .eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase}
-    h1{font-size:clamp(34px,6vw,56px);font-weight:600;letter-spacing:-2.5px;line-height:1.12;margin:18px 0}
-    h1 span{color:var(--muted)}
-    .hero p{color:var(--muted);font-size:16px;line-height:1.7;margin:0}
-
-    .panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px}
-    .form-head,.section-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
-    h2{font-size:16px;font-weight:600;margin:0}
-    .chip{border:1px solid var(--line);border-radius:30px;padding:6px 10px;color:var(--muted);font-size:11px;white-space:nowrap}
-    label{display:block;color:var(--muted);font-size:12px;margin:22px 0 9px}
-    .input-row{display:flex;gap:12px}
-    input{min-width:0;flex:1;width:100%;background:var(--field);border:1px solid var(--line);border-radius:14px;color:var(--text);padding:16px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px}
-    .primary{border:0;border-radius:14px;background:var(--button);color:var(--button-text);padding:15px 22px;font-weight:650;white-space:nowrap}
-    .form-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px}
-    .hint{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
-    .text-button{padding:5px 0;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:4px}
-    .error{color:var(--red);font-size:13px;line-height:1.6;margin:12px 0 0}
-    .status{min-height:22px;color:var(--muted);font-size:12px;margin:16px 2px}
-
-    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0 30px}
-    .metric{padding:20px;border-radius:18px}
-    .metric-label{font-size:12px;color:var(--muted)}
-    .metric-value{font-size:30px;font-weight:600;letter-spacing:-1px;margin-top:12px;font-variant-numeric:tabular-nums}
-    .metric-note{color:var(--muted);font-size:11px;margin-top:7px}
-    .section-head{margin:0 0 18px}
-    .results-address{display:flex;align-items:center;gap:10px;color:var(--muted);min-width:0}
-    .address-label{font-family:ui-monospace,monospace;font-size:12px}
-    .copy{font-size:11px;padding:7px 10px;border-radius:9px}
-
-    .networks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .network{min-width:0;padding:22px}
-    .network-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .identity{display:flex;align-items:center;gap:10px}
-    .network-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--field);border:1px solid var(--line);font-size:12px;font-weight:650}
-    .network-name{font-weight:600;font-size:13px}
-    .badge{font-size:10px;color:var(--muted)}
-    .badge.ok{color:var(--green)}
-    .badge.failed{color:var(--red)}
-    .balance{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:26px;letter-spacing:-1px;overflow-wrap:anywhere;margin:28px 0 5px;line-height:1.3}
-    .coin{font-size:12px;color:var(--muted)}
-    .network-note{font-size:11px;color:var(--muted);line-height:1.6;min-height:36px;margin-top:15px}
-    .network-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:12px}
-    .explorer{font-size:12px;text-decoration:none}
-    .explorer:hover{text-decoration:underline}
-    .retry{font-size:12px;padding:0;background:none;border:0;color:var(--text);text-decoration:underline;text-underline-offset:3px}
-    .info{margin-top:22px;color:var(--muted);font-size:12px;line-height:1.8}
-    .info strong{color:var(--text);font-weight:500}
-    footer{display:flex;justify-content:space-between;align-items:center;gap:15px;border-top:1px solid var(--line);margin-top:42px;padding:25px 0;color:var(--muted);font-size:11px}
-    .developer{font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:10px 13px;color:var(--text)}
-
-    @media(max-width:850px){
-      .networks{grid-template-columns:repeat(2,minmax(0,1fr))}
+    button:focus-visible,
+    a:focus-visible,
+    textarea:focus-visible{
+      outline:2px solid var(--text);
+      outline-offset:4px;
     }
 
-    @media(max-width:540px){
+    a{color:inherit}
+
+    .shell{
+      max-width:1180px;
+      margin:auto;
+      padding:0 28px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:26px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:650;
+      letter-spacing:-.4px;
+    }
+
+    .logo{
+      width:34px;
+      height:34px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      display:grid;
+      place-items:center;
+      font-size:20px;
+    }
+
+    .quiet{
+      background:var(--panel);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 14px;
+    }
+
+    .hero{
+      padding:58px 0 30px;
+      max-width:760px;
+    }
+
+    .eyebrow{
+      color:var(--muted);
+      font-size:11px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+
+    h1{
+      font-size:clamp(34px,6vw,56px);
+      font-weight:600;
+      letter-spacing:-2.5px;
+      line-height:1.12;
+      margin:18px 0;
+    }
+
+    h1 span{color:var(--muted)}
+
+    .hero p{
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      margin:0;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+    }
+
+    .form-head,
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+    }
+
+    h2{
+      font-size:16px;
+      font-weight:600;
+      margin:0;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:6px 10px;
+      color:var(--muted);
+      font-size:11px;
+      white-space:nowrap;
+    }
+
+    label{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      margin:22px 0 9px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+      background:var(--field);
+      border:1px solid var(--line);
+      border-radius:14px;
+      color:var(--text);
+      padding:16px;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .primary{
+      border:0;
+      border-radius:14px;
+      background:var(--button);
+      color:var(--button-text);
+      padding:15px 22px;
+      font-weight:650;
+      white-space:nowrap;
+    }
+
+    .secondary{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--panel);
+      color:var(--text);
+      padding:15px 18px;
+      font-weight:600;
+    }
+
+    .form-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.7;
+      margin:0;
+    }
+
+    .counter{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .error{
+      color:var(--red);
+      font-size:13px;
+      line-height:1.6;
+      margin:12px 0 0;
+    }
+
+    .status{
+      min-height:22px;
+      color:var(--muted);
+      font-size:12px;
+      margin:16px 2px;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin:10px 0 30px;
+    }
+
+    .metric{
+      padding:20px;
+      border-radius:18px;
+    }
+
+    .metric-label{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .metric-value{
+      font-size:30px;
+      font-weight:600;
+      letter-spacing:-1px;
+      margin-top:12px;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .metric-note{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:7px;
+      line-height:1.5;
+    }
+
+    .wallets{
+      display:grid;
+      gap:16px;
+    }
+
+    .wallet{
+      padding:20px;
+    }
+
+    .wallet-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .wallet-title{
+      min-width:0;
+    }
+
+    .wallet-address{
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:13px;
+      overflow-wrap:anywhere;
+    }
+
+    .wallet-meta{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .wallet-networks{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .mini-network{
+      border:1px solid var(--line);
+      background:var(--field);
+      border-radius:14px;
+      padding:14px;
+      min-width:0;
+    }
+
+    .mini-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .mini-name{
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .mini-status{
+      font-size:10px;
+      color:var(--muted);
+    }
+
+    .mini-status.ok{color:var(--green)}
+    .mini-status.failed{color:var(--red)}
+
+    .mini-balance{
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:18px;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+    }
+
+    .mini-symbol{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:3px;
+    }
+
+    .mini-bottom{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-top:12px;
+      padding-top:10px;
+      border-top:1px solid var(--line);
+    }
+
+    .explorer{
+      font-size:11px;
+      text-decoration:none;
+    }
+
+    .explorer:hover{text-decoration:underline}
+
+    .badge{
+      font-size:10px;
+      color:var(--muted);
+    }
+
+    .badge.ok{color:var(--green)}
+    .badge.failed{color:var(--red)}
+
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:28px 10px;
+    }
+
+    .info{
+      margin-top:22px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.8;
+    }
+
+    .info strong{
+      color:var(--text);
+      font-weight:500;
+    }
+
+    footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      border-top:1px solid var(--line);
+      margin-top:42px;
+      padding:25px 0;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .developer{
+      font-size:12px;
+      text-decoration:none;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 13px;
+      color:var(--text);
+    }
+
+    @media(max-width:900px){
+      .summary{grid-template-columns:repeat(2,1fr)}
+      .wallet-networks{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media(max-width:560px){
       .shell{padding:0 16px}
       .hero{padding:38px 0 24px}
       h1{letter-spacing:-1.5px}
-      .panel{padding:19px}
-      .input-row{flex-direction:column}
+      .panel{padding:18px}
       .summary{gap:8px}
       .metric{padding:13px}
       .metric-value{font-size:24px}
-      .metric-label{font-size:11px}
-      .networks{grid-template-columns:1fr}
-      .section-head{align-items:flex-start;flex-direction:column}
+      .wallet-networks{grid-template-columns:1fr}
+      .wallet-head{flex-direction:column}
       footer{flex-direction:column;align-items:flex-start}
       .chip{font-size:10px}
+      .actions{flex-direction:column}
+      .actions button{width:100%}
     }
 
     @media(prefers-reduced-motion:no-preference){
       .loading{animation:pulse 1.4s ease-in-out infinite}
-      @keyframes pulse{50%{opacity:.45}}
+
+      @keyframes pulse{
+        50%{opacity:.45}
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="shell">
+
     <header>
       <div class="brand">
         <span class="logo" aria-hidden="true">⌕</span>
         Wallet Checker
       </div>
-      <button class="quiet" id="themeToggle" type="button">☀ Light</button>
+
+      <button class="quiet" id="themeToggle" type="button">
+        ☀ Light
+      </button>
     </header>
 
     <main>
+
       <section class="hero">
-        <div class="eyebrow">Multichain / Native balances</div>
-        <h1>One address.<br><span>Six networks.</span></h1>
-        <p>A simple view of your native coin balances across EVM networks. Enter a public wallet address to get started.</p>
+        <div class="eyebrow">
+          Multichain / Batch mode
+        </div>
+
+        <h1>
+          Up to 30 wallets.<br>
+          <span>Six networks each.</span>
+        </h1>
+
+        <p>
+          Paste one public EVM address per line and check native balances
+          across Ethereum, Base, Arbitrum, Optimism, Polygon and BNB Chain.
+        </p>
       </section>
 
       <form class="panel" id="walletForm" novalidate>
+
         <div class="form-head">
-          <h2>Check a wallet</h2>
-          <span class="chip">Public address only</span>
+          <h2>Check wallets</h2>
+
+          <span class="chip">
+            Max 30 addresses
+          </span>
         </div>
 
-        <label for="address">EVM wallet address</label>
+        <label for="addresses">
+          EVM wallet addresses
+        </label>
 
-        <div class="input-row">
-          <input
-            id="address"
-            name="address"
-            type="text"
-            placeholder="0x…"
-            autocomplete="off"
-            autocapitalize="off"
-            spellcheck="false"
-            maxlength="42"
-            aria-describedby="addressHint error"
+        <textarea
+          id="addresses"
+          name="addresses"
+          placeholder="0x1234...&#10;0xabcd...&#10;0x9876..."
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-describedby="addressHint error"
+        ></textarea>
+
+        <div class="actions">
+
+          <button
+            class="primary"
+            id="checkButton"
+            type="submit"
           >
-          <button class="primary" id="checkButton" type="submit">
-            Check balances ↗
+            Check wallets ↗
           </button>
+
+          <button
+            class="secondary"
+            id="exampleButton"
+            type="button"
+          >
+            Add examples
+          </button>
+
+          <button
+            class="secondary"
+            id="clearButton"
+            type="button"
+          >
+            Clear
+          </button>
+
         </div>
 
         <div class="form-footer">
+
           <p class="hint" id="addressHint">
-            Your address is sent to public RPC providers to fetch balances.
+            One address per line. Duplicates are removed automatically.
+            Addresses are sent only to public RPC providers.
           </p>
-          <button class="text-button" id="exampleButton" type="button">
-            Use an example address
-          </button>
+
+          <span
+            class="counter"
+            id="addressCounter"
+          >
+            0 / 30
+          </span>
+
         </div>
 
-        <p class="error" id="error" role="alert" hidden></p>
+        <p
+          class="error"
+          id="error"
+          role="alert"
+          hidden
+        ></p>
+
       </form>
 
-      <p class="status" id="status" role="status" aria-live="polite">
+      <p
+        class="status"
+        id="status"
+        role="status"
+        aria-live="polite"
+      >
         Ready when you are.
       </p>
 
-      <div class="summary" aria-label="Scan summary">
-        <div class="panel metric">
-          <div class="metric-label">Networks checked</div>
-          <div class="metric-value" id="checked">—</div>
-          <div class="metric-note">Successful responses / 6</div>
-        </div>
+      <div
+        class="summary"
+        aria-label="Scan summary"
+      >
 
         <div class="panel metric">
-          <div class="metric-label">With native balance</div>
-          <div class="metric-value" id="funded">—</div>
-          <div class="metric-note">Among checked networks</div>
-        </div>
+          <div class="metric-label">
+            Wallets
+          </div>
 
-        <div class="panel metric">
-          <div class="metric-label">Unavailable</div>
-          <div class="metric-value" id="unavailable">—</div>
-          <div class="metric-note">Can be retried individually</div>
-        </div>
-      </div>
+          <div
+            class="metric-value"
+            id="walletCount"
+          >
+            —
+          </div>
 
-      <section aria-label="Network balances">
-        <div class="section-head">
-          <h2>Network balances</h2>
-          <div class="results-address">
-            <span class="address-label" id="scannedAddress">
-              No wallet checked yet
-            </span>
-            <button class="quiet copy" id="copyButton" type="button" hidden>
-              Copy address
-            </button>
+          <div class="metric-note">
+            Unique valid addresses
           </div>
         </div>
 
-        <div class="networks" id="networks"></div>
+        <div class="panel metric">
+          <div class="metric-label">
+            Network checks
+          </div>
+
+          <div
+            class="metric-value"
+            id="checked"
+          >
+            —
+          </div>
+
+          <div class="metric-note">
+            Successful / total
+          </div>
+        </div>
+
+        <div class="panel metric">
+          <div class="metric-label">
+            Wallets funded
+          </div>
+
+          <div
+            class="metric-value"
+            id="fundedWallets"
+          >
+            —
+          </div>
+
+          <div class="metric-note">
+            At least one native balance
+          </div>
+        </div>
+
+        <div class="panel metric">
+          <div class="metric-label">
+            Unavailable
+          </div>
+
+          <div
+            class="metric-value"
+            id="unavailable"
+          >
+            —
+          </div>
+
+          <div class="metric-note">
+            Failed network checks
+          </div>
+        </div>
+
+      </div>
+
+      <section aria-label="Wallet results">
+
+        <div class="section-head">
+
+          <h2>
+            Wallet results
+          </h2>
+
+          <span
+            class="chip"
+            id="progressChip"
+          >
+            No scan yet
+          </span>
+
+        </div>
+
+        <div
+          class="wallets"
+          id="wallets"
+        >
+
+          <div class="panel empty">
+            Add wallet addresses above to start.
+          </div>
+
+        </div>
+
       </section>
 
       <p class="info">
         <strong>Native coins only.</strong>
-        This version checks ETH, POL and BNB. ERC-20 tokens, NFTs and DeFi positions are outside this scan. An empty native balance does not mean the wallet holds no other assets.
+        This version checks ETH, POL and BNB.
+        ERC-20 tokens, NFTs and DeFi positions are not included.
+        A wallet can have a zero native balance and still hold other assets.
       </p>
+
     </main>
 
     <footer>
-      <span>Multichain Wallet Checker · Read-only · PublicNode RPC</span>
+
+      <span>
+        Multichain Wallet Checker · Read-only · PublicNode RPC
+      </span>
+
       <a
         class="developer"
         href="https://x.com/_Anchor_Point_"
@@ -210,448 +695,1539 @@
       >
         𝕏 Built by @_Anchor_Point_ ↗
       </a>
+
     </footer>
+
   </div>
 
   <script>
-    const $=id=>document.getElementById(id);
 
-    const chains=[
+    const $ = id =>
+      document.getElementById(id);
+
+
+    const MAX_WALLETS = 30;
+
+    const CONCURRENCY = 6;
+
+
+    const chains = [
+
       {
         id:'ethereum',
         name:'Ethereum',
-        icon:'Ξ',
         symbol:'ETH',
         chainId:1,
         rpc:'https://ethereum-rpc.publicnode.com',
         explorer:'https://etherscan.io'
       },
+
       {
         id:'base',
         name:'Base',
-        icon:'B',
         symbol:'ETH',
         chainId:8453,
         rpc:'https://base-rpc.publicnode.com',
         explorer:'https://basescan.org'
       },
+
       {
         id:'arbitrum',
         name:'Arbitrum',
-        icon:'Ar',
         symbol:'ETH',
         chainId:42161,
         rpc:'https://arbitrum-one-rpc.publicnode.com',
         explorer:'https://arbiscan.io'
       },
+
       {
         id:'optimism',
         name:'Optimism',
-        icon:'OP',
         symbol:'ETH',
         chainId:10,
         rpc:'https://optimism-rpc.publicnode.com',
         explorer:'https://optimistic.etherscan.io'
       },
+
       {
         id:'polygon',
         name:'Polygon',
-        icon:'P',
         symbol:'POL',
         chainId:137,
         rpc:'https://polygon-bor-rpc.publicnode.com',
         explorer:'https://polygonscan.com'
       },
+
       {
         id:'bsc',
         name:'BNB Chain',
-        icon:'BNB',
         symbol:'BNB',
         chainId:56,
         rpc:'https://bsc-rpc.publicnode.com',
         explorer:'https://bscscan.com'
       }
+
     ];
 
-    let activeAddress='';
-    let scanning=false;
-    let states=chains.map(()=>({status:'idle'}));
-    let rpcId=0;
+
+    let wallets = [];
+
+    let results = [];
+
+    let scanning = false;
+
+    let rpcId = 0;
+
 
     function isAddress(value){
+
       return /^0x[0-9a-fA-F]{40}$/.test(value);
+
     }
+
+
+    function parseAddresses(){
+
+      const raw =
+        $('addresses').value
+          .split(/\r?\n|,|\s+/)
+          .map(v => v.trim())
+          .filter(Boolean);
+
+
+      const unique = [
+        ...new Set(
+          raw.map(v => v.toLowerCase())
+        )
+      ];
+
+
+      return {
+
+        raw,
+
+        unique,
+
+        valid:
+          unique.filter(isAddress),
+
+        invalid:
+          unique.filter(
+            v => !isAddress(v)
+          )
+
+      };
+
+    }
+
+
+    function updateCounter(){
+
+      const { unique } =
+        parseAddresses();
+
+
+      $('addressCounter').textContent =
+        Math.min(
+          unique.length,
+          MAX_WALLETS
+        )
+        + ' / '
+        + MAX_WALLETS;
+
+    }
+
 
     function formatBalance(wei){
-      const unit=10n**18n;
-      const whole=(wei/unit).toString();
-      const fraction=(wei%unit)
-        .toString()
-        .padStart(18,'0')
-        .replace(/0+$/,'');
 
-      return whole+(fraction?'.'+fraction:'');
+      const unit =
+        10n ** 18n;
+
+
+      const whole =
+        (wei / unit).toString();
+
+
+      const fraction =
+        (wei % unit)
+          .toString()
+          .padStart(18,'0')
+          .replace(/0+$/,'');
+
+
+      return whole
+        + (
+          fraction
+            ? '.' + fraction
+            : ''
+        );
+
     }
+
 
     function shortBalance(wei){
-      if(wei===0n)return '0';
-      if(wei<10n**12n)return '<0.000001';
-
-      const exact=formatBalance(wei);
-      const [whole,fraction='']=exact.split('.');
-      const truncated=fraction.slice(0,6).replace(/0+$/,'');
-
-      return whole.replace(/\B(?=(\d{3})+(?!\d))/g,',')
-        +(truncated?'.'+truncated:'');
-    }
-
-    function element(tag,className,text){
-      const node=document.createElement(tag);
-      if(className)node.className=className;
-      if(text!==undefined)node.textContent=text;
-      return node;
-    }
-
-    function render(){
-      const grid=$('networks');
-      grid.replaceChildren();
-
-      chains.forEach((chain,index)=>{
-        const state=states[index];
-        const card=element('article','panel network');
-        const top=element('div','network-top');
-        const identity=element('div','identity');
-        const icon=element('span','network-icon',chain.icon);
-
-        icon.setAttribute('aria-hidden','true');
-
-        identity.append(
-          icon,
-          element('span','network-name',chain.name)
-        );
-
-        const labels={
-          idle:'Not checked',
-          loading:'Checking…',
-          ok:'Checked',
-          failed:'Unavailable'
-        };
-
-        top.append(
-          identity,
-          element('span','badge '+state.status,labels[state.status])
-        );
-
-        const balance=element(
-          'div',
-          'balance'+(state.status==='loading'?' loading':''),
-          state.status==='ok'?shortBalance(state.wei):'—'
-        );
-
-        if(state.status==='ok'){
-          balance.title=formatBalance(state.wei)+' '+chain.symbol;
-        }
-
-        const note=element(
-          'div',
-          'network-note',
-          state.status==='ok'
-            ? 'Checked at '+new Date(state.time).toLocaleTimeString()
-              +'. Hover the balance for full precision.'
-            : state.status==='failed'
-              ? state.error
-              : state.status==='loading'
-                ? 'Fetching the latest native balance…'
-                : 'Enter an address to check this network.'
-        );
-
-        const bottom=element('div','network-bottom');
-
-        if(activeAddress){
-          const link=element('a','explorer','View in explorer ↗');
-          link.href=chain.explorer+'/address/'+activeAddress;
-          link.target='_blank';
-          link.rel='noopener noreferrer';
-          link.setAttribute(
-            'aria-label',
-            'View address on '+chain.name+' explorer'
-          );
-          bottom.append(link);
-        }else{
-          bottom.append(element('span','hint','Mainnet'));
-        }
-
-        if(state.status==='failed'){
-          const retry=element('button','retry','Retry');
-          retry.type='button';
-          retry.disabled=scanning;
-          retry.setAttribute('aria-label','Retry '+chain.name);
-          retry.addEventListener('click',()=>retryChain(index));
-          bottom.append(retry);
-        }
-
-        card.append(
-          top,
-          balance,
-          element('div','coin',chain.symbol),
-          note,
-          bottom
-        );
-
-        grid.append(card);
-      });
-
-      $('checked').textContent=activeAddress
-        ? states.filter(s=>s.status==='ok').length+'/6'
-        : '—';
-
-      $('funded').textContent=activeAddress
-        ? String(states.filter(s=>s.status==='ok'&&s.wei>0n).length)
-        : '—';
-
-      $('unavailable').textContent=activeAddress
-        ? String(states.filter(s=>s.status==='failed').length)
-        : '—';
-    }
-
-    async function rpc(chain,method,params,signal){
-      const id=++rpcId;
-
-      const response=await fetch(chain.rpc,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          jsonrpc:'2.0',
-          id,
-          method,
-          params
-        }),
-        signal
-      });
-
-      if(!response.ok){
-        throw new Error(
-          response.status===429
-            ? 'RPC rate limit reached. Try again shortly.'
-            : 'RPC unavailable (HTTP '+response.status+').'
-        );
-      }
-
-      const data=await response.json();
-
-      if(data.error){
-        throw new Error('RPC returned an error. Try again shortly.');
-      }
 
       if(
-        data.id!==id ||
-        typeof data.result!=='string' ||
-        !/^0x[0-9a-fA-F]+$/.test(data.result)
+        wei === 0n
       ){
-        throw new Error('Invalid response from the RPC provider.');
+        return '0';
       }
 
-      return BigInt(data.result);
-    }
 
-    async function loadChain(index,address){
-      const chain=chains[index];
-      const controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),15000);
-
-      try{
-        const chainId=await rpc(
-          chain,
-          'eth_chainId',
-          [],
-          controller.signal
-        );
-
-        if(chainId!==BigInt(chain.chainId)){
-          throw new Error('RPC network mismatch. Balance not displayed.');
-        }
-
-        const wei=await rpc(
-          chain,
-          'eth_getBalance',
-          [address,'latest'],
-          controller.signal
-        );
-
-        states[index]={
-          status:'ok',
-          wei,
-          time:Date.now()
-        };
-      }catch(error){
-        states[index]={
-          status:'failed',
-          error:error.name==='AbortError'
-            ? 'RPC timed out. Try again.'
-            : error instanceof TypeError
-              ? 'Could not reach RPC. Check your connection or retry.'
-              : error.message
-        };
-      }finally{
-        clearTimeout(timeout);
-        render();
+      if(
+        wei < 10n ** 12n
+      ){
+        return '<0.000001';
       }
+
+
+      const exact =
+        formatBalance(wei);
+
+
+      const [
+        whole,
+        fraction=''
+      ] =
+        exact.split('.');
+
+
+      const truncated =
+        fraction
+          .slice(0,6)
+          .replace(/0+$/,'');
+
+
+      return whole
+        .replace(
+          /\B(?=(\d{3})+(?!\d))/g,
+          ','
+        )
+        +
+        (
+          truncated
+            ? '.' + truncated
+            : ''
+        );
+
     }
+
+
+    function shortAddress(address){
+
+      return address.slice(0,8)
+        + '…'
+        + address.slice(-6);
+
+    }
+
 
     function setBusy(value){
-      scanning=value;
-      $('checkButton').disabled=value;
-      $('address').disabled=value;
-      $('exampleButton').disabled=value;
 
-      $('checkButton').textContent=value
-        ? 'Checking…'
-        : 'Check balances ↗';
+      scanning =
+        value;
 
-      $('networks').setAttribute('aria-busy',String(value));
+
+      $('checkButton').disabled =
+        value;
+
+
+      $('addresses').disabled =
+        value;
+
+
+      $('exampleButton').disabled =
+        value;
+
+
+      $('clearButton').disabled =
+        value;
+
+
+      $('checkButton').textContent =
+        value
+          ? 'Checking…'
+          : 'Check wallets ↗';
+
     }
 
-    function finishStatus(){
-      const checked=states.filter(s=>s.status==='ok').length;
 
-      $('status').textContent=checked===6
-        ? 'Scan complete. All 6 networks responded.'
-        : checked===0
-          ? 'No network responded. Check your connection and retry.'
-          : 'Scan complete. '+checked
-            +' of 6 networks responded. Retry unavailable networks below.';
+    function emptyStates(){
+
+      return chains.map(
+        () => ({
+          status:'idle'
+        })
+      );
+
     }
 
-    async function scan(event){
+
+    function render(){
+
+      const container =
+        $('wallets');
+
+
+      container.replaceChildren();
+
+
+      if(
+        !wallets.length
+      ){
+
+        const empty =
+          document.createElement('div');
+
+
+        empty.className =
+          'panel empty';
+
+
+        empty.textContent =
+          'Add wallet addresses above to start.';
+
+
+        container.append(empty);
+
+
+        $('walletCount').textContent =
+          '—';
+
+
+        $('checked').textContent =
+          '—';
+
+
+        $('fundedWallets').textContent =
+          '—';
+
+
+        $('unavailable').textContent =
+          '—';
+
+
+        $('progressChip').textContent =
+          'No scan yet';
+
+
+        return;
+
+      }
+
+
+      let okCount = 0;
+
+      let failCount = 0;
+
+      let fundedWalletCount = 0;
+
+      let finishedChecks = 0;
+
+
+      wallets.forEach(
+        (
+          address,
+          walletIndex
+        ) => {
+
+          const walletResult =
+            results[walletIndex];
+
+
+          const okStates =
+            walletResult.filter(
+              s =>
+                s.status === 'ok'
+            );
+
+
+          const failedStates =
+            walletResult.filter(
+              s =>
+                s.status === 'failed'
+            );
+
+
+          okCount +=
+            okStates.length;
+
+
+          failCount +=
+            failedStates.length;
+
+
+          finishedChecks +=
+            okStates.length
+            + failedStates.length;
+
+
+          if(
+            okStates.some(
+              s =>
+                s.wei > 0n
+            )
+          ){
+
+            fundedWalletCount++;
+
+          }
+
+
+          const card =
+            document.createElement(
+              'article'
+            );
+
+
+          card.className =
+            'panel wallet';
+
+
+          const head =
+            document.createElement(
+              'div'
+            );
+
+
+          head.className =
+            'wallet-head';
+
+
+          const title =
+            document.createElement(
+              'div'
+            );
+
+
+          title.className =
+            'wallet-title';
+
+
+          const addr =
+            document.createElement(
+              'div'
+            );
+
+
+          addr.className =
+            'wallet-address';
+
+
+          addr.textContent =
+            shortAddress(address);
+
+
+          addr.title =
+            address;
+
+
+          const meta =
+            document.createElement(
+              'div'
+            );
+
+
+          meta.className =
+            'wallet-meta';
+
+
+          meta.textContent =
+            okStates.length
+            + '/'
+            + chains.length
+            + ' networks responded';
+
+
+          title.append(
+            addr,
+            meta
+          );
+
+
+          const copy =
+            document.createElement(
+              'button'
+            );
+
+
+          copy.className =
+            'quiet';
+
+
+          copy.type =
+            'button';
+
+
+          copy.textContent =
+            'Copy';
+
+
+          copy.addEventListener(
+            'click',
+            async()=>{
+              try{
+
+                await navigator.clipboard
+                  .writeText(address);
+
+
+                $('status').textContent =
+                  'Address copied: '
+                  + shortAddress(address);
+
+              }catch{
+
+                $('status').textContent =
+                  'Copy this address: '
+                  + address;
+
+              }
+            }
+          );
+
+
+          head.append(
+            title,
+            copy
+          );
+
+
+          const grid =
+            document.createElement(
+              'div'
+            );
+
+
+          grid.className =
+            'wallet-networks';
+
+
+          chains.forEach(
+            (
+              chain,
+              chainIndex
+            ) => {
+
+              const state =
+                walletResult[
+                  chainIndex
+                ];
+
+
+              const network =
+                document.createElement(
+                  'div'
+                );
+
+
+              network.className =
+                'mini-network';
+
+
+              const top =
+                document.createElement(
+                  'div'
+                );
+
+
+              top.className =
+                'mini-top';
+
+
+              const name =
+                document.createElement(
+                  'span'
+                );
+
+
+              name.className =
+                'mini-name';
+
+
+              name.textContent =
+                chain.name;
+
+
+              const badge =
+                document.createElement(
+                  'span'
+                );
+
+
+              badge.className =
+                'mini-status '
+                + state.status;
+
+
+              const label = {
+
+                idle:'Waiting',
+
+                loading:'Checking…',
+
+                ok:'Checked',
+
+                failed:'Unavailable'
+
+              };
+
+
+              badge.textContent =
+                label[
+                  state.status
+                ];
+
+
+              top.append(
+                name,
+                badge
+              );
+
+
+              const balance =
+                document.createElement(
+                  'div'
+                );
+
+
+              balance.className =
+                'mini-balance'
+                +
+                (
+                  state.status === 'loading'
+                    ? ' loading'
+                    : ''
+                );
+
+
+              balance.textContent =
+                state.status === 'ok'
+                  ? shortBalance(
+                      state.wei
+                    )
+                  : '—';
+
+
+              if(
+                state.status === 'ok'
+              ){
+
+                balance.title =
+                  formatBalance(
+                    state.wei
+                  )
+                  + ' '
+                  + chain.symbol;
+
+              }
+
+
+              const symbol =
+                document.createElement(
+                  'div'
+                );
+
+
+              symbol.className =
+                'mini-symbol';
+
+
+              symbol.textContent =
+                chain.symbol;
+
+
+              const bottom =
+                document.createElement(
+                  'div'
+                );
+
+
+              bottom.className =
+                'mini-bottom';
+
+
+              const link =
+                document.createElement(
+                  'a'
+                );
+
+
+              link.className =
+                'explorer';
+
+
+              link.href =
+                chain.explorer
+                + '/address/'
+                + address;
+
+
+              link.target =
+                '_blank';
+
+
+              link.rel =
+                'noopener noreferrer';
+
+
+              link.textContent =
+                'Explorer ↗';
+
+
+              const note =
+                document.createElement(
+                  'span'
+                );
+
+
+              note.className =
+                'badge '
+                + state.status;
+
+
+              note.textContent =
+                state.status === 'failed'
+                  ? 'Failed'
+                  : state.status === 'ok'
+                    ? (
+                        state.wei > 0n
+                          ? 'Funded'
+                          : 'Zero'
+                      )
+                    : '';
+
+
+              bottom.append(
+                link,
+                note
+              );
+
+
+              network.append(
+                top,
+                balance,
+                symbol,
+                bottom
+              );
+
+
+              grid.append(
+                network
+              );
+
+            }
+          );
+
+
+          card.append(
+            head,
+            grid
+          );
+
+
+          container.append(
+            card
+          );
+
+        }
+      );
+
+
+      const totalChecks =
+        wallets.length
+        * chains.length;
+
+
+      $('walletCount').textContent =
+        String(
+          wallets.length
+        );
+
+
+      $('checked').textContent =
+        okCount
+        + '/'
+        + totalChecks;
+
+
+      $('fundedWallets').textContent =
+        String(
+          fundedWalletCount
+        );
+
+
+      $('unavailable').textContent =
+        String(
+          failCount
+        );
+
+
+      $('progressChip').textContent =
+        finishedChecks
+        + ' / '
+        + totalChecks
+        + ' checks finished';
+
+    }
+
+
+    async function rpc(
+      chain,
+      method,
+      params,
+      signal
+    ){
+
+      const id =
+        ++rpcId;
+
+
+      const response =
+        await fetch(
+          chain.rpc,
+          {
+
+            method:'POST',
+
+            headers:{
+              'Content-Type':
+                'application/json'
+            },
+
+            body:
+              JSON.stringify({
+                jsonrpc:'2.0',
+                id,
+                method,
+                params
+              }),
+
+            signal
+
+          }
+        );
+
+
+      if(
+        !response.ok
+      ){
+
+        throw new Error(
+
+          response.status === 429
+
+            ? 'RPC rate limit reached.'
+
+            : 'RPC unavailable (HTTP '
+              + response.status
+              + ').'
+
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      if(
+        data.error
+      ){
+
+        throw new Error(
+          'RPC returned an error.'
+        );
+
+      }
+
+
+      if(
+        data.id !== id
+        ||
+        typeof data.result !== 'string'
+        ||
+        !/^0x[0-9a-fA-F]+$/.test(
+          data.result
+        )
+      ){
+
+        throw new Error(
+          'Invalid RPC response.'
+        );
+
+      }
+
+
+      return BigInt(
+        data.result
+      );
+
+    }
+
+
+    async function verifyChain(
+      chain
+    ){
+
+      const controller =
+        new AbortController();
+
+
+      const timeout =
+        setTimeout(
+          () =>
+            controller.abort(),
+          12000
+        );
+
+
+      try{
+
+        const chainId =
+          await rpc(
+            chain,
+            'eth_chainId',
+            [],
+            controller.signal
+          );
+
+
+        if(
+          chainId !==
+          BigInt(
+            chain.chainId
+          )
+        ){
+
+          throw new Error(
+            'RPC network mismatch.'
+          );
+
+        }
+
+
+        return true;
+
+      }finally{
+
+        clearTimeout(
+          timeout
+        );
+
+      }
+
+    }
+
+
+    async function loadBalance(
+      walletIndex,
+      chainIndex
+    ){
+
+      const address =
+        wallets[
+          walletIndex
+        ];
+
+
+      const chain =
+        chains[
+          chainIndex
+        ];
+
+
+      results[
+        walletIndex
+      ][
+        chainIndex
+      ] = {
+
+        status:'loading'
+
+      };
+
+
+      render();
+
+
+      const controller =
+        new AbortController();
+
+
+      const timeout =
+        setTimeout(
+          () =>
+            controller.abort(),
+          15000
+        );
+
+
+      try{
+
+        const wei =
+          await rpc(
+            chain,
+            'eth_getBalance',
+            [
+              address,
+              'latest'
+            ],
+            controller.signal
+          );
+
+
+        results[
+          walletIndex
+        ][
+          chainIndex
+        ] = {
+
+          status:'ok',
+
+          wei,
+
+          time:
+            Date.now()
+
+        };
+
+      }catch(error){
+
+        results[
+          walletIndex
+        ][
+          chainIndex
+        ] = {
+
+          status:'failed',
+
+          error:
+
+            error.name === 'AbortError'
+
+              ? 'RPC timed out.'
+
+              : error instanceof TypeError
+
+                ? 'Could not reach RPC.'
+
+                : error.message
+
+        };
+
+      }finally{
+
+        clearTimeout(
+          timeout
+        );
+
+
+        render();
+
+      }
+
+    }
+
+
+    async function runPool(
+      tasks,
+      limit
+    ){
+
+      let index = 0;
+
+
+      async function worker(){
+
+        while(
+          index < tasks.length
+        ){
+
+          const current =
+            index++;
+
+
+          await tasks[
+            current
+          ]();
+
+        }
+
+      }
+
+
+      await Promise.all(
+
+        Array.from(
+
+          {
+            length:
+              Math.min(
+                limit,
+                tasks.length
+              )
+          },
+
+          () =>
+            worker()
+
+        )
+
+      );
+
+    }
+
+
+    async function scan(
+      event
+    ){
+
       event.preventDefault();
 
-      if(scanning)return;
 
-      const address=$('address').value.trim();
-
-      if(!isAddress(address)){
-        $('error').textContent=
-          'Enter 0x followed by 40 hexadecimal characters. ENS names are not supported yet.';
-        $('error').hidden=false;
-        $('address').setAttribute('aria-invalid','true');
-        $('address').focus();
+      if(
+        scanning
+      ){
         return;
       }
 
-      $('error').hidden=true;
-      $('address').removeAttribute('aria-invalid');
-      $('address').value=address;
-      activeAddress=address;
 
-      $('scannedAddress').textContent=
-        address.slice(0,8)+'…'+address.slice(-6);
-      $('scannedAddress').title=address;
-      $('copyButton').hidden=false;
+      const parsed =
+        parseAddresses();
 
-      states=chains.map(()=>({status:'loading'}));
 
-      setBusy(true);
-      render();
+      if(
+        parsed.invalid.length
+      ){
 
-      $('status').textContent=
-        'Checking 6 networks. Results appear as each network responds…';
+        $('error').textContent =
+          'Invalid address: '
+          + parsed.invalid[0]
+          + '. Use 0x followed by 40 hexadecimal characters.';
 
-      try{
-        await Promise.allSettled(
-          chains.map((_,index)=>loadChain(index,address))
+
+        $('error').hidden =
+          false;
+
+
+        return;
+
+      }
+
+
+      if(
+        !parsed.valid.length
+      ){
+
+        $('error').textContent =
+          'Add at least one valid EVM wallet address.';
+
+
+        $('error').hidden =
+          false;
+
+
+        $('addresses').focus();
+
+
+        return;
+
+      }
+
+
+      if(
+        parsed.valid.length
+        >
+        MAX_WALLETS
+      ){
+
+        $('error').textContent =
+          'Maximum '
+          + MAX_WALLETS
+          + ' unique wallet addresses per scan.';
+
+
+        $('error').hidden =
+          false;
+
+
+        return;
+
+      }
+
+
+      $('error').hidden =
+        true;
+
+
+      wallets =
+        parsed.valid;
+
+
+      results =
+        wallets.map(
+          () =>
+            emptyStates()
         );
-      }finally{
-        setBusy(false);
-        render();
-        finishStatus();
-      }
-    }
 
-    async function retryChain(index){
-      if(scanning||!activeAddress)return;
 
-      setBusy(true);
-      states[index]={status:'loading'};
-      render();
-
-      $('status').textContent='Retrying '+chains[index].name+'…';
-
-      try{
-        await loadChain(index,activeAddress);
-      }finally{
-        setBusy(false);
-        render();
-        finishStatus();
-      }
-    }
-
-    function setTheme(theme){
-      document.documentElement.dataset.theme=theme;
-      $('themeToggle').textContent=theme==='dark'?'☀ Light':'☾ Dark';
-
-      $('themeToggle').setAttribute(
-        'aria-label',
-        'Switch to '+(theme==='dark'?'light':'dark')+' theme'
+      setBusy(
+        true
       );
 
+
+      render();
+
+
+      $('status').textContent =
+        'Preparing '
+        + wallets.length
+        + ' wallet'
+        + (
+          wallets.length === 1
+            ? ''
+            : 's'
+        )
+        + ' across '
+        + chains.length
+        + ' networks…';
+
+
       try{
-        localStorage.setItem('wallet-checker-theme',theme);
-      }catch{}
+
+        const availableChains =
+          [];
+
+
+        for(
+          let chainIndex = 0;
+          chainIndex < chains.length;
+          chainIndex++
+        ){
+
+          const chain =
+            chains[
+              chainIndex
+            ];
+
+
+          $('status').textContent =
+            'Checking '
+            + chain.name
+            + ' RPC…';
+
+
+          try{
+
+            await verifyChain(
+              chain
+            );
+
+
+            availableChains.push(
+              chainIndex
+            );
+
+          }catch(error){
+
+            wallets.forEach(
+              (
+                _,
+                walletIndex
+              ) => {
+
+                results[
+                  walletIndex
+                ][
+                  chainIndex
+                ] = {
+
+                  status:'failed',
+
+                  error:
+                    'RPC unavailable.'
+
+                };
+
+              }
+            );
+
+
+            render();
+
+          }
+
+        }
+
+
+        const tasks =
+          [];
+
+
+        for(
+          const chainIndex
+          of availableChains
+        ){
+
+          for(
+            let walletIndex = 0;
+            walletIndex < wallets.length;
+            walletIndex++
+          ){
+
+            tasks.push(
+
+              () =>
+                loadBalance(
+                  walletIndex,
+                  chainIndex
+                )
+
+            );
+
+          }
+
+        }
+
+
+        $('status').textContent =
+          'Scanning balances… '
+          + tasks.length
+          + ' network checks queued.';
+
+
+        await runPool(
+          tasks,
+          CONCURRENCY
+        );
+
+
+        const successCount =
+          results
+            .flat()
+            .filter(
+              state =>
+                state.status === 'ok'
+            )
+            .length;
+
+
+        const total =
+          wallets.length
+          * chains.length;
+
+
+        $('status').textContent =
+          'Scan complete. '
+          + successCount
+          + ' of '
+          + total
+          + ' network checks responded.';
+
+      }finally{
+
+        setBusy(
+          false
+        );
+
+
+        render();
+
+      }
+
     }
 
-    let theme='dark';
 
-    try{
-      if(localStorage.getItem('wallet-checker-theme')==='light'){
-        theme='light';
-      }
-    }catch{}
+    function setTheme(
+      theme
+    ){
 
-    setTheme(theme);
+      document.documentElement
+        .dataset.theme =
+          theme;
 
-    $('themeToggle').addEventListener('click',()=>setTheme(
-      document.documentElement.dataset.theme==='dark'
-        ? 'light'
-        : 'dark'
-    ));
 
-    $('walletForm').addEventListener('submit',scan);
+      $('themeToggle').textContent =
+        theme === 'dark'
+          ? '☀ Light'
+          : '☾ Dark';
 
-    $('exampleButton').addEventListener('click',()=>{
-      $('address').value=
-        '0x000000000000000000000000000000000000dEaD';
 
-      $('error').hidden=true;
-      $('address').removeAttribute('aria-invalid');
-      $('address').focus();
+      $('themeToggle')
+        .setAttribute(
+          'aria-label',
+          'Switch to '
+          + (
+            theme === 'dark'
+              ? 'light'
+              : 'dark'
+          )
+          + ' theme'
+        );
 
-      $('status').textContent=
-        'Example burn address filled. Click Check balances for live results.';
-    });
-
-    $('copyButton').addEventListener('click',async()=>{
-      if(!activeAddress)return;
 
       try{
-        await navigator.clipboard.writeText(activeAddress);
-        $('status').textContent='Address copied.';
-      }catch{
-        $('status').textContent='Copy this checked address: '+activeAddress;
-      }
-    });
 
-    $('address').addEventListener('input',()=>{
-      $('error').hidden=true;
-      $('address').removeAttribute('aria-invalid');
+        localStorage
+          .setItem(
+            'wallet-checker-theme',
+            theme
+          );
 
-      if(activeAddress&&$('address').value.trim()!==activeAddress){
-        $('status').textContent=
-          'Address changed. Check balances to update results. Cards still show '
-          +activeAddress+'.';
+      }catch{}
+
+    }
+
+
+    let theme =
+      'dark';
+
+
+    try{
+
+      if(
+        localStorage
+          .getItem(
+            'wallet-checker-theme'
+          )
+        ===
+        'light'
+      ){
+
+        theme =
+          'light';
+
       }
-    });
+
+    }catch{}
+
+
+    setTheme(
+      theme
+    );
+
+
+    $('themeToggle')
+      .addEventListener(
+        'click',
+        () => {
+
+          setTheme(
+
+            document
+              .documentElement
+              .dataset
+              .theme
+            ===
+            'dark'
+
+              ? 'light'
+
+              : 'dark'
+
+          );
+
+        }
+      );
+
+
+    $('walletForm')
+      .addEventListener(
+        'submit',
+        scan
+      );
+
+
+    $('addresses')
+      .addEventListener(
+        'input',
+        () => {
+
+          $('error').hidden =
+            true;
+
+
+          updateCounter();
+
+        }
+      );
+
+
+    $('exampleButton')
+      .addEventListener(
+        'click',
+        () => {
+
+          $('addresses').value = [
+
+            '0x000000000000000000000000000000000000dEaD',
+
+            '0x0000000000000000000000000000000000000000'
+
+          ].join('\n');
+
+
+          $('error').hidden =
+            true;
+
+
+          updateCounter();
+
+
+          $('addresses').focus();
+
+
+          $('status').textContent =
+            'Example addresses added. Click Check wallets to scan.';
+
+        }
+      );
+
+
+    $('clearButton')
+      .addEventListener(
+        'click',
+        () => {
+
+          $('addresses').value =
+            '';
+
+
+          wallets =
+            [];
+
+
+          results =
+            [];
+
+
+          $('error').hidden =
+            true;
+
+
+          $('status').textContent =
+            'Ready when you are.';
+
+
+          updateCounter();
+
+
+          render();
+
+
+          $('addresses').focus();
+
+        }
+      );
+
+
+    updateCounter();
 
     render();
+
   </script>
+
 </body>
 </html>
