@@ -1,3 +1,23 @@
+const NETWORKS = [
+  "eth-mainnet",
+  "base-mainnet",
+  "arb-mainnet",
+  "opt-mainnet",
+  "polygon-mainnet",
+  "bnb-mainnet",
+  "celo-mainnet",
+  "ink-mainnet",
+  "sonic-mainnet",
+  "sei-mainnet",
+  "scroll-mainnet",
+  "opbnb-mainnet",
+  "cronos-mainnet",
+  "berachain-mainnet",
+  "unichain-mainnet"
+];
+
+const MAX_ADDRESSES = 30;
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -13,7 +33,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const { addresses, networks } = req.body || {};
+  const { addresses } = req.body || {};
 
   if (!Array.isArray(addresses) || addresses.length === 0) {
     return res.status(400).json({
@@ -21,9 +41,9 @@ export default async function handler(req, res) {
     });
   }
 
-  if (addresses.length > 30) {
+  if (addresses.length > MAX_ADDRESSES) {
     return res.status(400).json({
-      error: "Maximum 30 addresses per request"
+      error: `Maximum ${MAX_ADDRESSES} addresses per request`
     });
   }
 
@@ -32,7 +52,7 @@ export default async function handler(req, res) {
   const uniqueAddresses = [
     ...new Set(
       addresses
-        .map(address => String(address).trim())
+        .map(address => String(address).trim().toLowerCase())
         .filter(address => evmAddressRegex.test(address))
     )
   ];
@@ -43,23 +63,10 @@ export default async function handler(req, res) {
     });
   }
 
-  const defaultNetworks = [
-    "eth-mainnet",
-    "base-mainnet",
-    "arb-mainnet",
-    "opt-mainnet",
-    "matic-mainnet"
-  ];
-
-  const selectedNetworks =
-    Array.isArray(networks) && networks.length
-      ? networks
-      : defaultNetworks;
-
-  const requestBody = {
+  const body = {
     addresses: uniqueAddresses.map(address => ({
       address,
-      networks: selectedNetworks
+      networks: NETWORKS
     })),
 
     withMetadata: true,
@@ -74,10 +81,12 @@ export default async function handler(req, res) {
       `https://api.g.alchemy.com/data/v1/${apiKey}/assets/tokens/by-address`,
       {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody)
+
+        body: JSON.stringify(body)
       }
     );
 
@@ -94,7 +103,9 @@ export default async function handler(req, res) {
   } catch (error) {
     return res.status(500).json({
       error: "Failed to fetch portfolio data",
-      message: error.message
+      message: error instanceof Error
+        ? error.message
+        : "Unknown error"
     });
   }
 }
