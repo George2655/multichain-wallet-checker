@@ -101,9 +101,7 @@
 
     .shell {
       max-width: 1180px;
-
       margin: auto;
-
       padding: 0 28px;
     }
 
@@ -122,11 +120,8 @@
 
     .brand {
       display: flex;
-
       align-items: center;
-
       gap: 12px;
-
       font-weight: 650;
     }
 
@@ -135,7 +130,6 @@
       height: 34px;
 
       display: grid;
-
       place-items: center;
 
       border: 1px solid var(--line);
@@ -156,17 +150,13 @@
 
     .hero {
       max-width: 780px;
-
       padding: 58px 0 30px;
     }
 
     .eyebrow {
       color: var(--muted);
-
       font-size: 11px;
-
       letter-spacing: 2px;
-
       text-transform: uppercase;
     }
 
@@ -178,7 +168,6 @@
       font-weight: 600;
 
       letter-spacing: -2.5px;
-
       line-height: 1.1;
     }
 
@@ -192,7 +181,6 @@
       color: var(--muted);
 
       font-size: 16px;
-
       line-height: 1.7;
     }
 
@@ -217,15 +205,12 @@
 
     h2 {
       margin: 0;
-
       font-size: 16px;
-
       font-weight: 600;
     }
 
     .chip {
       display: inline-flex;
-
       align-items: center;
 
       border: 1px solid var(--line);
@@ -234,7 +219,6 @@
       padding: 6px 10px;
 
       color: var(--muted);
-
       font-size: 11px;
 
       white-space: nowrap;
@@ -246,13 +230,11 @@
       margin: 22px 0 9px;
 
       color: var(--muted);
-
       font-size: 12px;
     }
 
     textarea {
       width: 100%;
-
       min-height: 180px;
 
       resize: vertical;
@@ -272,13 +254,11 @@
         monospace;
 
       font-size: 13px;
-
       line-height: 1.55;
     }
 
     .actions {
       display: flex;
-
       flex-wrap: wrap;
 
       gap: 12px;
@@ -326,13 +306,11 @@
     .hint,
     .counter {
       color: var(--muted);
-
       font-size: 12px;
     }
 
     .hint {
       margin: 0;
-
       line-height: 1.7;
     }
 
@@ -371,13 +349,11 @@
 
     .metric {
       padding: 20px;
-
       border-radius: 18px;
     }
 
     .metric-label {
       color: var(--muted);
-
       font-size: 12px;
     }
 
@@ -385,7 +361,6 @@
       margin-top: 12px;
 
       font-size: 30px;
-
       font-weight: 600;
 
       font-variant-numeric:
@@ -410,13 +385,11 @@
 
     .portfolio-total {
       margin-top: 16px;
-
       padding: 28px;
     }
 
     .portfolio-total-label {
       color: var(--muted);
-
       font-size: 12px;
     }
 
@@ -465,7 +438,6 @@
     .network-list,
     .wallet-list {
       display: grid;
-
       gap: 9px;
     }
 
@@ -525,7 +497,6 @@
     .token-icon img {
       width: 100%;
       height: 100%;
-
       object-fit: cover;
     }
 
@@ -575,7 +546,6 @@
 
     .wallet-section {
       margin-top: 16px;
-
       margin-bottom: 38px;
     }
 
@@ -596,7 +566,6 @@
 
     .wallet-total {
       font-weight: 600;
-
       text-align: right;
     }
 
@@ -640,8 +609,6 @@
       text-decoration: none;
     }
 
-    /* DRAWER */
-
     .drawer-overlay {
       position: fixed;
 
@@ -660,7 +627,6 @@
 
     .drawer-overlay.open {
       opacity: 1;
-
       pointer-events: auto;
     }
 
@@ -703,7 +669,6 @@
 
     .drawer-title {
       font-size: 25px;
-
       font-weight: 600;
     }
 
@@ -725,7 +690,6 @@
 
     .drawer-total-label {
       color: var(--muted);
-
       font-size: 11px;
     }
 
@@ -733,7 +697,6 @@
       margin-top: 8px;
 
       font-size: 34px;
-
       font-weight: 600;
     }
 
@@ -766,8 +729,16 @@
       display: flex;
 
       justify-content: space-between;
+      align-items: center;
 
       gap: 12px;
+    }
+
+    .holder-wallet-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
     }
 
     .holder-address {
@@ -780,9 +751,31 @@
       font-size: 12px;
     }
 
+    .copy-button {
+      flex-shrink: 0;
+
+      background: var(--panel);
+      color: var(--muted);
+
+      border: 1px solid var(--line);
+      border-radius: 8px;
+
+      padding: 5px 8px;
+
+      font-size: 10px;
+
+      transition:
+        color .15s ease,
+        border-color .15s ease;
+    }
+
+    .copy-button:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
     .holder-balance {
       text-align: right;
-
       font-weight: 600;
     }
 
@@ -830,7 +823,15 @@
 
       footer {
         flex-direction: column;
+        align-items: flex-start;
+      }
 
+      .holder-top {
+        align-items: flex-start;
+      }
+
+      .holder-wallet-wrap {
+        flex-direction: column;
         align-items: flex-start;
       }
     }
@@ -1269,11 +1270,6 @@
     [];
 
 
-  /* -----------------------------
-     NETWORK LABELS
-  ----------------------------- */
-
-
   const NETWORK_LABELS = {
 
     "eth-mainnet":
@@ -1342,6 +1338,107 @@
   };
 
 
+  const NATIVE_TOKENS = {
+
+    "eth-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "base-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "arb-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "opt-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "scroll-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "ink-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "unichain-mainnet": {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 18
+    },
+
+    "polygon-mainnet": {
+      symbol: "POL",
+      name: "POL",
+      decimals: 18
+    },
+
+    "matic-mainnet": {
+      symbol: "POL",
+      name: "POL",
+      decimals: 18
+    },
+
+    "bnb-mainnet": {
+      symbol: "BNB",
+      name: "BNB",
+      decimals: 18
+    },
+
+    "celo-mainnet": {
+      symbol: "CELO",
+      name: "Celo",
+      decimals: 18
+    },
+
+    "berachain-mainnet": {
+      symbol: "BERA",
+      name: "Berachain",
+      decimals: 18
+    },
+
+    "sonic-mainnet": {
+      symbol: "S",
+      name: "Sonic",
+      decimals: 18
+    },
+
+    "sei-mainnet": {
+      symbol: "SEI",
+      name: "Sei",
+      decimals: 18
+    },
+
+    "opbnb-mainnet": {
+      symbol: "BNB",
+      name: "BNB",
+      decimals: 18
+    },
+
+    "cronos-mainnet": {
+      symbol: "CRO",
+      name: "Cronos",
+      decimals: 18
+    }
+
+  };
+
+
   function networkName(network) {
 
     return NETWORK_LABELS[network]
@@ -1350,11 +1447,6 @@
         .replaceAll("-", " ");
 
   }
-
-
-  /* -----------------------------
-     FORMATTERS
-  ----------------------------- */
 
 
   function formatUsd(value) {
@@ -1381,9 +1473,7 @@
       Number(value);
 
 
-    if (
-      number >= 1000000
-    ) {
+    if (number >= 1000000) {
 
       return number.toLocaleString(
 
@@ -1398,9 +1488,7 @@
     }
 
 
-    if (
-      number >= 1
-    ) {
+    if (number >= 1) {
 
       return number.toLocaleString(
 
@@ -1435,11 +1523,6 @@
       + address.slice(-6);
 
   }
-
-
-  /* -----------------------------
-     ADDRESS INPUT
-  ----------------------------- */
 
 
   function isAddress(value) {
@@ -1518,11 +1601,6 @@
   }
 
 
-  /* -----------------------------
-     HEX TOKEN BALANCE
-  ----------------------------- */
-
-
   function balanceToNumber(
     hexBalance,
     decimals
@@ -1557,9 +1635,7 @@
         raw % divisor;
 
 
-      if (
-        decimals === 0
-      ) {
+      if (decimals === 0) {
 
         return Number(
           whole
@@ -1638,23 +1714,11 @@
   }
 
 
-  /* -----------------------------
-     NORMALIZE ALCHEMY TOKENS
-  ----------------------------- */
-
-
-  function normalizeTokens(
-    response
-  ) {
+  function normalizeTokens(response) {
 
     const tokens =
-
-      Array.isArray(
-        response?.data?.tokens
-      )
-
+      Array.isArray(response?.data?.tokens)
         ? response.data.tokens
-
         : [];
 
 
@@ -1662,105 +1726,112 @@
       [];
 
 
-    tokens.forEach(
-      token => {
+    tokens.forEach(token => {
 
-        const metadata =
-          token.tokenMetadata || {};
-
-
-        const decimals =
-          Number(
-            metadata.decimals ?? 0
-          );
+      const isNative =
+        token.tokenAddress === null;
 
 
-        const amount =
-          balanceToNumber(
-            token.tokenBalance,
-            decimals
-          );
+      const native =
+        isNative
+          ? NATIVE_TOKENS[token.network]
+          : null;
 
 
-        const price =
-          usdPrice(
-            token
-          );
+      const metadata =
+        token.tokenMetadata || {};
 
 
-        const value =
-          amount * price;
+      const decimals =
+        native
+          ? native.decimals
+          : Number(metadata.decimals ?? 0);
 
 
-        if (
-          !Number.isFinite(value)
-          ||
-          value < MIN_USD
-        ) {
-
-          return;
-
-        }
+      const symbol =
+        native
+          ? native.symbol
+          : metadata.symbol || "UNKNOWN";
 
 
-        const symbol =
+      const name =
+        native
+          ? native.name
+          : metadata.name || symbol;
 
-          metadata.symbol
-          || "UNKNOWN";
+
+      const amount =
+        balanceToNumber(
+          token.tokenBalance,
+          decimals
+        );
 
 
-        positions.push({
+      const price =
+        usdPrice(token);
 
-          wallet:
-            String(
-              token.address
-            ).toLowerCase(),
 
-          network:
-            token.network,
+      const value =
+        amount * price;
 
-          networkName:
-            networkName(
-              token.network
-            ),
 
-          tokenAddress:
-            token.tokenAddress
+      if (
+        amount <= 0
+        ||
+        price <= 0
+        ||
+        !Number.isFinite(value)
+        ||
+        value < MIN_USD
+      ) {
+
+        return;
+
+      }
+
+
+      positions.push({
+
+        wallet:
+          String(token.address)
+            .toLowerCase(),
+
+        network:
+          token.network,
+
+        networkName:
+          networkName(
+            token.network
+          ),
+
+        tokenAddress:
+          token.tokenAddress
             ? String(
                 token.tokenAddress
               ).toLowerCase()
             : null,
 
-          symbol,
+        symbol,
 
-          name:
-            metadata.name
-            || symbol,
+        name,
 
-          logo:
-            metadata.logo
-            || null,
+        logo:
+          metadata.logo || null,
 
-          amount,
+        amount,
 
-          price,
+        price,
 
-          value
+        value
 
-        });
+      });
 
-      }
-    );
+    });
 
 
     return positions;
 
   }
-
-
-  /* -----------------------------
-     AGGREGATION
-  ----------------------------- */
 
 
   function aggregate(
@@ -1798,11 +1869,6 @@
     positions.forEach(
       position => {
 
-        /*
-          Same token contract on the same network
-          becomes one aggregated asset.
-        */
-
         const tokenKey =
 
           position.network
@@ -1814,11 +1880,7 @@
           );
 
 
-        if (
-          !groups.has(
-            tokenKey
-          )
-        ) {
+        if (!groups.has(tokenKey)) {
 
           groups.set(
             tokenKey,
@@ -2010,11 +2072,6 @@
   }
 
 
-  /* -----------------------------
-     RENDER PORTFOLIO
-  ----------------------------- */
-
-
   function renderPortfolio(
     portfolio,
     addresses
@@ -2097,9 +2154,7 @@
   }
 
 
-  function createTokenIcon(
-    token
-  ) {
+  function createTokenIcon(token) {
 
     const icon =
       document.createElement(
@@ -2111,9 +2166,7 @@
       "token-icon";
 
 
-    if (
-      token.logo
-    ) {
+    if (token.logo) {
 
       const image =
         document.createElement(
@@ -2160,9 +2213,7 @@
   }
 
 
-  function renderTokens(
-    groups
-  ) {
+  function renderTokens(groups) {
 
     const list =
       $("tokenList");
@@ -2171,9 +2222,7 @@
     list.replaceChildren();
 
 
-    if (
-      groups.length === 0
-    ) {
+    if (groups.length === 0) {
 
       const empty =
         document.createElement(
@@ -2345,9 +2394,7 @@
   }
 
 
-  function renderNetworks(
-    networks
-  ) {
+  function renderNetworks(networks) {
 
     const list =
       $("networkList");
@@ -2447,9 +2494,7 @@
   }
 
 
-  function renderWallets(
-    wallets
-  ) {
+  function renderWallets(wallets) {
 
     const list =
       $("walletList");
@@ -2523,14 +2568,7 @@
   }
 
 
-  /* -----------------------------
-     TOKEN DRAWER
-  ----------------------------- */
-
-
-  function openDrawer(
-    token
-  ) {
+  function openDrawer(token) {
 
     $("drawerTitle")
       .textContent =
@@ -2613,6 +2651,16 @@
           "holder-top";
 
 
+        const walletWrap =
+          document.createElement(
+            "div"
+          );
+
+
+        walletWrap.className =
+          "holder-wallet-wrap";
+
+
         const wallet =
           document.createElement(
             "div"
@@ -2631,6 +2679,87 @@
 
         wallet.title =
           holder.wallet;
+
+
+        const copyButton =
+          document.createElement(
+            "button"
+          );
+
+
+        copyButton.type =
+          "button";
+
+
+        copyButton.className =
+          "copy-button";
+
+
+        copyButton.textContent =
+          "Copy";
+
+
+        copyButton.title =
+          "Copy wallet address";
+
+
+        copyButton.addEventListener(
+          "click",
+
+          async event => {
+
+            event.stopPropagation();
+
+
+            try {
+
+              await navigator.clipboard.writeText(
+                holder.wallet
+              );
+
+
+              copyButton.textContent =
+                "Copied ✓";
+
+
+              setTimeout(
+                () => {
+
+                  copyButton.textContent =
+                    "Copy";
+
+                },
+                1400
+              );
+
+            }
+
+            catch {
+
+              copyButton.textContent =
+                "Failed";
+
+
+              setTimeout(
+                () => {
+
+                  copyButton.textContent =
+                    "Copy";
+
+                },
+                1400
+              );
+
+            }
+
+          }
+        );
+
+
+        walletWrap.append(
+          wallet,
+          copyButton
+        );
 
 
         const balance =
@@ -2655,7 +2784,7 @@
 
 
         top.append(
-          wallet,
+          walletWrap,
           balance
         );
 
@@ -2752,14 +2881,7 @@
     );
 
 
-  /* -----------------------------
-     API REQUEST
-  ----------------------------- */
-
-
-  async function fetchPortfolio(
-    addresses
-  ) {
+  async function fetchPortfolio(addresses) {
 
     const response =
 
@@ -2804,9 +2926,7 @@
     }
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
 
@@ -2823,14 +2943,7 @@
   }
 
 
-  /* -----------------------------
-     SCAN
-  ----------------------------- */
-
-
-  async function scan(
-    event
-  ) {
+  async function scan(event) {
 
     event.preventDefault();
 
@@ -2839,9 +2952,7 @@
       parseAddresses();
 
 
-    if (
-      parsed.invalid.length
-    ) {
+    if (parsed.invalid.length) {
 
       $("error")
         .textContent =
@@ -2859,9 +2970,7 @@
     }
 
 
-    if (
-      parsed.valid.length === 0
-    ) {
+    if (parsed.valid.length === 0) {
 
       $("error")
         .textContent =
@@ -2978,9 +3087,7 @@
           : [];
 
 
-      if (
-        partialErrors.length
-      ) {
+      if (partialErrors.length) {
 
         $("status")
           .classList
@@ -3059,11 +3166,6 @@
   }
 
 
-  /* -----------------------------
-     CLEAR
-  ----------------------------- */
-
-
   function clearPortfolio() {
 
     $("addresses").value =
@@ -3113,14 +3215,7 @@
   }
 
 
-  /* -----------------------------
-     THEME
-  ----------------------------- */
-
-
-  function setTheme(
-    theme
-  ) {
+  function setTheme(theme) {
 
     document
       .documentElement
@@ -3214,11 +3309,6 @@
       }
 
     );
-
-
-  /* -----------------------------
-     EVENTS
-  ----------------------------- */
 
 
   $("walletForm")
