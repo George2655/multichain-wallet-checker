@@ -1,2 +1,2 @@
 # multichain-wallet-checker
-Check native wallet balances across multiple EVM networks.
+Aggregate token portfolios across multiple EVM wallets and networks.
